@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.arash.altafi.instagramexplore.widget.CustomToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        app:btnBackShow="true"
+        app:layout_scrollFlags="scroll|enterAlways|snap"
+        app:liftOnScroll="true" />
+
+    <com.google.android.exoplayer2.ui.StyledPlayerView
+        android:id="@+id/videoPlayer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layoutDirection="ltr"
+        app:controller_layout_id="@layout/custom_video_player"
+        app:player_layout_id="@layout/exo_player_view">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="visible" />
+
+    </com.google.android.exoplayer2.ui.StyledPlayerView>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

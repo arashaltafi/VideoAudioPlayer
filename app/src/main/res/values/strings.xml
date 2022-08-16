@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">InstagramExplore</string>
+    <string name="search">جستجو</string>
+    <string name="normal">عادی</string>
+    <string name="video_speed">سرعت پخش</string>
+    <string name="speed_media">%s برابر</string>
+</resources>

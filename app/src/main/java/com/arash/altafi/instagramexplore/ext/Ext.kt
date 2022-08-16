@@ -1,0 +1,399 @@
+package com.arash.altafi.instagramexplore.ext
+
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.Context
+import android.content.res.Resources
+import android.graphics.Bitmap
+import android.media.MediaMetadataRetriever
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.DisplayMetrics
+import android.util.Log
+import android.util.TypedValue
+import android.view.GestureDetector
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewAnimationUtils
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.TextView
+import androidx.appcompat.widget.SearchView
+import androidx.core.view.GestureDetectorCompat
+import com.arash.altafi.instagramexplore.R
+import com.arash.altafi.instagramexplore.utils.Utils.speedMedia
+import com.google.android.exoplayer2.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.util.*
+import java.util.concurrent.TimeUnit
+import kotlin.collections.HashMap
+import kotlin.math.hypot
+import kotlin.math.roundToInt
+
+@SuppressLint("LogNotTimber")
+fun Any.logE(tag: String = "", throwable: Throwable? = null) {
+    Log.e(tag, "$this\n", throwable)
+}
+
+@SuppressLint("LogNotTimber")
+fun Any.logI(tag: String = "", throwable: Throwable? = null) {
+    Log.i("nExt -> $tag", "$this\n", throwable)
+}
+
+@SuppressLint("LogNotTimber")
+fun Any.logD(tag: String = "", throwable: Throwable? = null) {
+    Log.d(tag, "$this\n", throwable)
+}
+
+inline fun <reified NEW> Any.isCastable(): Boolean {
+    return this is NEW
+}
+
+inline fun <reified NEW> Any.cast(): NEW? {
+    return if (this.isCastable<NEW>())
+        this as NEW
+    else null
+}
+
+fun View.toShow() {
+    this.visibility = View.VISIBLE
+}
+
+fun View.isShow(): Boolean {
+    return this.visibility == View.VISIBLE
+}
+
+fun View.toHide() {
+    this.visibility = View.INVISIBLE
+}
+
+fun View.isHide(): Boolean {
+    return this.visibility == View.INVISIBLE
+}
+
+fun View.toGone() {
+    this.visibility = View.GONE
+}
+
+fun View.isGone(): Boolean {
+    return this.visibility == View.GONE
+}
+
+fun String.applyValue(vararg args: Any?): String {
+    return String.format(Locale.US, this, *args)
+}
+
+fun View.showKeyboard() {
+    this.requestFocus()
+    try {
+        val inputMethodManager =
+            context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+    } catch (e: java.lang.Exception) {
+        "showKeyboard failed, error: $e".logE("showKeyboard")
+    }
+}
+
+fun View.hideKeyboard() {
+    val inputMethodManager =
+        context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
+}
+
+fun TextView.clear() {
+    this.text = ""
+}
+
+fun Int.toPx(): Int {
+    val displayMetrics = Resources.getSystem().displayMetrics
+    return (this * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
+}
+
+fun Int.toDp(): Int {
+    val displayMetrics = Resources.getSystem().displayMetrics
+    return (this / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
+}
+
+fun Float.toPx(): Float {
+    return TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        this,
+        Resources.getSystem().displayMetrics
+    )
+}
+
+fun View.enable() {
+    this.isEnabled = true
+}
+
+fun View.disable() {
+    this.isEnabled = false
+}
+
+fun EditText.textString() =
+    this.text.toString()
+
+enum class RevealModel {
+    START,
+    CENTER,
+    END
+}
+
+fun View.reveal(
+    duration: Long, model: RevealModel,
+    endListener: (() -> Unit)? = null
+) {
+    val cxF = when (model) {
+        RevealModel.START -> width
+        RevealModel.CENTER -> width / 2
+        else -> 0
+    }
+
+    val cyF = height / 2
+
+    val radius = hypot(width.toDouble(), height.toDouble()).toFloat()
+
+    ViewAnimationUtils.createCircularReveal(
+        this, cxF, cyF, 0f, radius
+    ).apply {
+        setDuration(duration)
+        addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationStart(animation: Animator?) {
+                super.onAnimationStart(animation)
+                toShow()
+            }
+
+            override fun onAnimationEnd(animation: Animator?) {
+                super.onAnimationEnd(animation)
+                enable()
+                endListener?.invoke()
+            }
+        })
+    }.start()
+}
+
+fun View.unReveal(
+    duration: Long, model: RevealModel,
+    endListener: (() -> Unit)? = null
+) {
+
+    val cxF = when (model) {
+        RevealModel.START -> right
+        RevealModel.CENTER -> width / 2
+        else -> left
+    }
+
+    val cyF = height / 2
+
+    val radius = hypot(width.toDouble(), height.toDouble()).toFloat()
+
+    ViewAnimationUtils.createCircularReveal(
+        this, cxF, cyF, radius, 0f
+    ).apply {
+        setDuration(duration)
+        addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationStart(animation: Animator?) {
+                super.onAnimationStart(animation)
+                disable()
+            }
+
+            override fun onAnimationEnd(animation: Animator?) {
+                super.onAnimationEnd(animation)
+                toHide()
+                endListener?.invoke()
+            }
+        })
+    }.start()
+}
+
+fun EditText?.afterTextChange(afterTextChanged: (String) -> Unit): TextWatcher {
+    var beforeText = ""
+    val watcher = object : TextWatcher {
+        override fun afterTextChanged(editable: Editable?) {
+            if (beforeText == editable.toString())
+                return
+
+            afterTextChanged.invoke(editable.toString())
+        }
+
+        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+            beforeText = s.toString()
+        }
+
+        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+    }
+
+    this?.addTextChangedListener(watcher)
+
+    return watcher
+}
+
+fun <T> debounce(
+    waitMs: Long = 300L,
+    scope: CoroutineScope,
+    destinationFunction: (T) -> Unit
+): (T) -> Unit {
+    var debounceJob: Job? = null
+    return { param: T ->
+        debounceJob?.cancel()
+        debounceJob = scope.launch {
+            delay(waitMs)
+            destinationFunction(param)
+        }
+    }
+}
+
+fun <T> debounceCancelable(
+    waitMs: Long = 300L,
+    scope: CoroutineScope,
+    destinationFunction: (T) -> Unit
+): (T?) -> Unit {
+    var debounceJob: Job? = null
+    return { param: T? ->
+        debounceJob?.cancel()
+        if (param != null)
+            debounceJob = scope.launch {
+                delay(waitMs)
+                destinationFunction(param)
+            }
+    }
+}
+
+fun EditText.onChange(
+    waitMs: Long = 800L,
+    scope: CoroutineScope,
+    destinationFunction: (String) -> Unit,
+): TextWatcher = afterTextChange(debounce(waitMs, scope, destinationFunction))
+
+
+fun SearchView.onChange(
+    waitMs: Long = 800L,
+    scope: CoroutineScope,
+    destinationFunction: (String) -> Unit,
+) {
+    val f = debounceCancelable(waitMs, scope, destinationFunction)
+
+    this.setOnQueryTextListener(object :
+        SearchView.OnQueryTextListener {
+        override fun onQueryTextSubmit(query: String?): Boolean {
+            f.invoke(null)
+            destinationFunction.invoke(query ?: "")
+
+            return true
+        }
+
+        override fun onQueryTextChange(newText: String?): Boolean {
+            f.invoke(newText ?: "")
+
+            return true
+        }
+    })
+}
+
+fun ExoPlayer.speedDialog(context: Context) {
+    val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+    builder.setTitle(context.getString(R.string.video_speed))
+    builder.setItems(speedMedia(context)) { _, which ->
+        if (which == 0) {
+            val param = PlaybackParameters(0.25f)
+            this.playbackParameters = param
+        }
+        if (which == 1) {
+            val param = PlaybackParameters(0.5f)
+            this.playbackParameters = param
+        }
+        if (which == 2) {
+            val param = PlaybackParameters(0.75f)
+            this.playbackParameters = param
+        }
+        if (which == 3) {
+            val param = PlaybackParameters(1f)
+            this.playbackParameters = param
+        }
+        if (which == 4) {
+            val param = PlaybackParameters(1.25f)
+            this.playbackParameters = param
+        }
+        if (which == 5) {
+            val param = PlaybackParameters(1.5f)
+            this.playbackParameters = param
+        }
+        if (which == 6) {
+            val param = PlaybackParameters(2f)
+            this.playbackParameters = param
+        }
+    }
+    builder.show()
+}
+
+fun ExoPlayer.initialize(
+    videoPlayer: com.google.android.exoplayer2.ui.StyledPlayerView,
+    title: String,
+    url: String,
+) {
+    videoPlayer.player = this
+
+    val mediaItem: MediaItem = MediaItem.Builder()
+        .setUri(url)
+//        .setMimeType(MimeTypes.APPLICATION_MP4) //For Videos and Mp3
+//        .setMimeType(MimeTypes.APPLICATION_M3U8) //For Stream Live Videos
+        .setMediaMetadata(MediaMetadata.Builder().setTitle(title).build())
+        .setLiveConfiguration(
+            MediaItem.LiveConfiguration.Builder()
+                .setMaxPlaybackSpeed(1.02f)
+                .build()
+        )
+        .build()
+    this.setMediaItem(mediaItem)
+    this.prepare()
+    this.playWhenReady = true
+    videoPlayer.requestFocus()
+    videoPlayer.setShowFastForwardButton(true)
+    videoPlayer.setShowNextButton(false)
+    videoPlayer.setShowPreviousButton(false)
+}
+
+fun Long.convertDurationToTime(): String {
+    val convertHours = java.lang.String.format(
+        "%02d", TimeUnit.MILLISECONDS.toHours(this)
+    )
+    val convertMinutes = java.lang.String.format(
+        "%02d", TimeUnit.MILLISECONDS.toMinutes(this) - TimeUnit.HOURS.toMinutes(
+            TimeUnit.MILLISECONDS.toHours(this))
+    )
+    val convertSeconds = java.lang.String.format(
+        "%02d", TimeUnit.MILLISECONDS.toSeconds(this) - TimeUnit.MINUTES.toSeconds(
+            TimeUnit.MILLISECONDS.toMinutes(this))
+    )
+    return if (this > 3600000) "$convertHours:$convertMinutes:$convertSeconds" else "$convertMinutes:$convertSeconds"
+}
+
+fun String.captureImage(): Bitmap? {
+    val mediaMetadataRetriever = MediaMetadataRetriever()
+    mediaMetadataRetriever.setDataSource(this, HashMap())
+    return mediaMetadataRetriever.getFrameAtTime(1000)
+}
+
+fun View.doubleClick(context: Context, onDoubleTap: (() -> Unit)) {
+    val gestureDetector =
+        GestureDetectorCompat(context, object :
+            GestureDetector.SimpleOnGestureListener() {
+            override fun onDown(e: MotionEvent): Boolean {
+                return true
+            }
+            override fun onDoubleTap(e: MotionEvent): Boolean {
+                onDoubleTap.invoke()
+                return true
+            }
+        })
+    this.setOnTouchListener { v, event ->
+        if (event.action == MotionEvent.ACTION_BUTTON_RELEASE)
+            v.performClick()
+        return@setOnTouchListener gestureDetector.onTouchEvent(event)
+    }
+}

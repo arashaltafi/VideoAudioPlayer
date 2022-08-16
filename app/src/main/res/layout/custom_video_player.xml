@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:background="#dd000000"
+    android:layoutDirection="ltr"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="4dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@id/exo_rew"
+            style="@style/ExoMediaButton.Rewind"
+            android:adjustViewBounds="true"
+            android:fitsSystemWindows="true"
+            android:src="@drawable/ic_round_replay_5_24"
+            app:layout_collapseMode="parallax" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@id/exo_play"
+            style="@style/ExoMediaButton.Play"
+            android:adjustViewBounds="true"
+            android:fitsSystemWindows="true"
+            android:src="@drawable/exo_styled_controls_play"
+            app:layout_collapseMode="parallax" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@id/exo_pause"
+            style="@style/ExoMediaButton.Pause"
+            android:adjustViewBounds="true"
+            android:fitsSystemWindows="true"
+            android:src="@drawable/exo_styled_controls_pause"
+            app:layout_collapseMode="parallax" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@id/exo_ffwd"
+            style="@style/ExoMediaButton.FastForward"
+            android:adjustViewBounds="true"
+            android:fitsSystemWindows="true"
+            android:src="@drawable/ic_round_forward_10_24"
+            app:layout_collapseMode="parallax" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@id/exo_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:paddingHorizontal="4dp"
+            style="@style/txt.h2.bold"
+            android:textColor="#FFBEBEBE"
+            tools:text="05:36" />
+
+        <com.google.android.exoplayer2.ui.DefaultTimeBar
+            android:id="@id/exo_progress"
+            android:layout_width="0dp"
+            android:layout_height="26dp"
+            android:layout_weight="1" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@id/exo_duration"
+            style="@style/txt.h2.bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:paddingHorizontal="4dp"
+            android:textColor="#FFBEBEBE"
+            tools:text="11:48" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@id/exo_playback_speed"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginHorizontal="8dp"
+            android:adjustViewBounds="true"
+            android:fitsSystemWindows="true"
+            android:src="@drawable/ic_baseline_speed_24"
+            app:layout_collapseMode="parallax" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/exo_fullscreen_button"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_weight="0"
+            android:layout_marginStart="0dp"
+            android:adjustViewBounds="true"
+            android:fitsSystemWindows="true"
+            android:layout_marginEnd="10dp"
+            android:background="@null"
+            android:src="@drawable/ic_baseline_fullscreen_24"
+            app:layout_collapseMode="parallax"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.appcompat.widget.LinearLayoutCompat>
