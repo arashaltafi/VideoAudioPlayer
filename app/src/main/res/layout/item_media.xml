@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layoutDirection="rtl"
     android:layout_marginBottom="32dp">
 
     <FrameLayout
@@ -32,6 +33,28 @@
             android:id="@+id/rlVideo"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivBackgroundMusic"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alpha="0.4"
+                android:visibility="gone"
+                android:scaleType="centerCrop"
+                tools:srcCompat="@drawable/ic_launcher_background" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivMusic"
+                android:layout_width="200dp"
+                android:layout_centerInParent="true"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                app:shapeAppearance="@style/appearance.round.50"
+                tools:srcCompat="@drawable/ic_launcher_background"
+                app:strokeColor="?android:colorBackground"
+                app:strokeWidth="4dp" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -69,10 +92,10 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginEnd="24dp"
-                android:layout_marginBottom="16dp"
                 android:elevation="0dp"
-                app:cardBackgroundColor="#40000000"
-                app:cardElevation="0dp">
+                app:cardElevation="0dp"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="#40000000">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="wrap_content"

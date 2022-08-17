@@ -44,7 +44,7 @@ class VideoRecyclerView @JvmOverloads constructor(
         // FIXME: use correct coroutine dispatcher
         videoViewHolderChanges()
             .onEach { playVideo(it) }
-            .launchIn(((context as ContextWrapper).baseContext as LifecycleOwner).lifecycleScope)
+            .launchIn((context as LifecycleOwner).lifecycleScope)
 
         addOnChildAttachStateChangeListener(object : OnChildAttachStateChangeListener {
             override fun onChildViewAttachedToWindow(view: View) {}

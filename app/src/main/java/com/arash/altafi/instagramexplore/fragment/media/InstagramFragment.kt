@@ -58,7 +58,7 @@ class InstagramFragment : Fragment() {
                 getString(R.string.lorem),
                 getString(R.string.lorem),
                 "https://videos1.varzeshe3.com/videos-quality/2022/06/28/B/naiqrfhh.mp4",
-                true,
+                TypeMedia.VIDEO,
                 "105",
                 "15",
                 "۵۹ دقیقه قبل"
@@ -69,7 +69,7 @@ class InstagramFragment : Fragment() {
                 "پخش زنده منوتو",
                 getString(R.string.lorem),
                 "https://edge-cdn1.manoto.click/live_500.m3u8",
-                true,
+                TypeMedia.VIDEO,
                 "105",
                 "15",
                 "۵۹ دقیقه قبل"
@@ -80,10 +80,11 @@ class InstagramFragment : Fragment() {
                 "موزیک سلام فرمانده",
                 getString(R.string.lorem),
                 "https://dls.music-fa.com/tagdl/1401/Abozar%20Roohi%20-%20Salam%20Farmande%20(320).mp3",
-                true,
+                TypeMedia.MUSIC,
                 "105",
                 "15",
-                "۵۹ دقیقه قبل"
+                "۵۹ دقیقه قبل",
+                "https://i1.delgarm.com/i/804/0102/31/62893a8f7aeef.jpeg"
             )
         )
         mediaResponse.add(
@@ -91,7 +92,7 @@ class InstagramFragment : Fragment() {
                 getString(R.string.lorem),
                 getString(R.string.lorem),
                 "https://i1.delgarm.com/i/804/0102/31/62893a8f7aeef.jpeg",
-                false,
+                TypeMedia.IMAGE,
                 "200",
                 "54",
                 "۴۵ دقیقه قبل"
@@ -102,7 +103,7 @@ class InstagramFragment : Fragment() {
                 getString(R.string.lorem),
                 getString(R.string.lorem),
                 "https://cld7.hostdl.net/play/movie/2022/07/The_Witch_Part_2_The_Other_One_2022_Trailer.mkv",
-                true,
+                TypeMedia.VIDEO,
                 "523",
                 "32",
                 "۳۲ دقیقه قبل"
@@ -113,7 +114,7 @@ class InstagramFragment : Fragment() {
                 getString(R.string.lorem),
                 getString(R.string.lorem),
                 "https://cld7.hostdl.net/play/movie/2022/07/Jurassic_World_Dominion_2022_Trailer.mkv",
-                true,
+                TypeMedia.VIDEO,
                 "523",
                 "32",
                 "۳۲ دقیقه قبل"
@@ -124,7 +125,7 @@ class InstagramFragment : Fragment() {
                 getString(R.string.lorem),
                 getString(R.string.lorem),
                 "https://filesamples.com/samples/video/mp4/sample_960x540.mp4",
-                true,
+                TypeMedia.VIDEO,
                 "897",
                 "96",
                 "۲۰ دقیقه قبل"

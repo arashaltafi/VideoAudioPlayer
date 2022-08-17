@@ -4,8 +4,15 @@ data class MediaResponse(
     val title: String,
     val description: String,
     val url: String,
-    val isVideo: Boolean,
+    val type: TypeMedia,
     val view: String,
     val like: String,
-    val time: String
+    val time: String,
+    val imageUrl: String? = null
 )
+
+enum class TypeMedia {
+    VIDEO,
+    MUSIC,
+    IMAGE
+}

@@ -13,6 +13,8 @@ import com.arash.altafi.instagramexplore.R
 import com.arash.altafi.instagramexplore.databinding.ItemMediaBinding
 import com.arash.altafi.instagramexplore.ext.*
 import com.arash.altafi.instagramexplore.fragment.media.InstagramFragment
+import com.arash.altafi.instagramexplore.fragment.media.InstagramFragmentDirections
+import com.arash.altafi.instagramexplore.fragment.media.TypeMedia
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
@@ -29,7 +31,7 @@ class VideoViewHolder(bindingMedia: ItemMediaBinding) :
     }
 
     private var item: VideoViewItem.VideoItem? = null
-    private var isItemVideo = true
+    private lateinit var typeMedia: TypeMedia
     private var isLike = false
     private val binding = bindingMedia
     private var timeVideo: Long = 0
@@ -44,20 +46,51 @@ class VideoViewHolder(bindingMedia: ItemMediaBinding) :
         videoAdapter = adapter
 
         with(videoItem.video) {
-            //fixme: won't run properly, because of [VideoRecyclerView]
             runJob()
 
-            isItemVideo = isVideo
+            typeMedia = type
 
             binding.apply {
                 val context = itemView.context
 
                 setSound(context, adapter.isMuted.value, false)
 
-                if (isItemVideo) {
-                    rlVideo.toShow()
+                when (typeMedia) {
+                    TypeMedia.VIDEO -> {
+                        videoPlayer.toShow()
+                        rlVideo.toShow()
+                        ivSound.toShow()
+                        tvTimeVideo.toShow()
+                        cvView.toShow()
+                        ivBackgroundMusic.toGone()
+                        ivMusic.toGone()
+                        ivBackground.toShow()
+                    }
+                    TypeMedia.IMAGE -> {
+                        videoPlayer.toShow()
+                        rlVideo.toGone()
+                        ivBackgroundMusic.toGone()
+                        ivMusic.toGone()
+                        ivBackground.toShow()
+                    }
+                    TypeMedia.MUSIC -> {
+                        videoPlayer.toGone()
+                        ivBackground.toGone()
+                        rlVideo.toShow()
+                        ivSound.toGone()
+                        tvTimeVideo.toGone()
+                        cvView.toGone()
+                        ivBackgroundMusic.toShow()
+                        ivMusic.toShow()
+                    }
+                }
+
+                if (imageUrl?.isNotEmpty() == true) {
+                    ivMusic.setImage(imageUrl)
+                    ivBackgroundMusic.setBlurImage(imageUrl)
                 } else {
-                    rlVideo.toGone()
+                    ivMusic.setImage(R.drawable.ic_launcher_background)
+                    ivBackgroundMusic.setBlurImage(R.drawable.ic_launcher_background)
                 }
 
                 Glide.with(context).load(url)
@@ -108,15 +141,15 @@ class VideoViewHolder(bindingMedia: ItemMediaBinding) :
                         }
 
                         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-//                            if (isItemVideo)
-//                                Navigation.findNavController(videoPlayer).navigate(
-//                                    InstagramFragmentDirections.actionInstagramFragmentToVideoPlayerFragment(
-//                                        title,
-//                                        url,
-//                                        videoPlayer.player?.currentPosition ?: 0
-//                                    )
-//                                )
-                            return isItemVideo
+                            if (typeMedia == TypeMedia.VIDEO)
+                                Navigation.findNavController(videoPlayer).navigate(
+                                    InstagramFragmentDirections.actionInstagramFragmentToVideoFragment(
+                                        title,
+                                        url,
+                                        videoPlayer.player?.currentPosition ?: 0
+                                    )
+                                )
+                            return typeMedia == TypeMedia.VIDEO
                         }
 
                         override fun onDoubleTap(e: MotionEvent): Boolean {
@@ -213,7 +246,7 @@ class VideoViewHolder(bindingMedia: ItemMediaBinding) :
         binding.apply {
             videoPlayer.toGone()
             ivBackground.toShow()
-            if (isItemVideo) progressBar.toShow() else progressBar.toGone()
+            if (typeMedia == TypeMedia.VIDEO) progressBar.toShow() else progressBar.toGone()
             //play video
             with(player) {
                 playVideo()
@@ -228,7 +261,7 @@ class VideoViewHolder(bindingMedia: ItemMediaBinding) :
             videoPlayer.player = null
             videoPlayer.toGone()
             ivBackground.toShow()
-            if (isItemVideo) progressBar.toShow() else progressBar.toGone()
+            if (typeMedia == TypeMedia.VIDEO) progressBar.toShow() else progressBar.toGone()
         }
 
         playerJob?.cancel()
@@ -240,7 +273,7 @@ class VideoViewHolder(bindingMedia: ItemMediaBinding) :
             setSound(binding.root.context, videoAdapter?.isMuted?.value == true, false)
 
             if (videoPlayer.player != null) {
-                if (isItemVideo) videoPlayer.toShow() else videoPlayer.toGone()
+                if (typeMedia == TypeMedia.VIDEO) videoPlayer.toShow() else videoPlayer.toGone()
                 ivBackground.toGone()
                 progressBar.toGone()
                 timeVideo = videoPlayer.player?.duration ?: 0
