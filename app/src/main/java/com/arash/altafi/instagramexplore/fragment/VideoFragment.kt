@@ -43,6 +43,9 @@ class VideoFragment : Fragment() {
     private fun setupToolbar(title: String) {
         toolbarView = binding.toolbar
         toolbarView?.initToolbar(title = title)
+        toolbarView?.onBackClickToolbar = {
+            findNavController().navigateUp()
+        }
     }
 
     private fun initializeVideo(title: String, url: String) {
@@ -85,6 +88,7 @@ class VideoFragment : Fragment() {
                     toolbar.toShow()
                     requireActivity().requestedOrientation =
                         ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                     requireActivity().window.clearFlags(
                         WindowManager.LayoutParams.FLAG_FULLSCREEN
                     )

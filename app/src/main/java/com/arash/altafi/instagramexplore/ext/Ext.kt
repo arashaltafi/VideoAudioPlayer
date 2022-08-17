@@ -19,16 +19,21 @@ import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.GestureDetectorCompat
 import com.arash.altafi.instagramexplore.R
 import com.arash.altafi.instagramexplore.utils.Utils.speedMedia
 import com.google.android.exoplayer2.*
+import com.squareup.picasso.Callback
+import com.squareup.picasso.Picasso
+import jp.wasabeef.picasso.transformations.BlurTransformation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.HashMap
@@ -396,4 +401,37 @@ fun View.doubleClick(context: Context, onDoubleTap: (() -> Unit)) {
             v.performClick()
         return@setOnTouchListener gestureDetector.onTouchEvent(event)
     }
+}
+
+fun ImageView.setBlurImage(url: Int) {
+    Picasso.get()
+        .load(url)
+        .transform(BlurTransformation(context, 25, 1))
+        .into(this)
+}
+
+fun ImageView.setBlurImage(url: String) {
+    Picasso.get()
+        .load(url)
+        .transform(BlurTransformation(context, 25, 1))
+        .into(this)
+}
+
+fun ImageView.setImage(url: String, onSuccess: (() -> Unit)? = null, onError: (() -> Unit)? = null) {
+    Picasso.get()
+        .load(url)
+        .into(this, object: Callback {
+            override fun onSuccess() {
+                onSuccess?.invoke()
+            }
+            override fun onError(e: Exception?) {
+                onError?.invoke()
+            }
+        })
+}
+
+fun ImageView.setImage(drawable: Int) {
+    Picasso.get()
+        .load(drawable)
+        .into(this)
 }

@@ -72,4 +72,15 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.17.1'
     implementation 'com.google.android.exoplayer:exoplayer-core:2.17.1'
 
+    //Noise (Visualiser)
+    implementation 'com.github.paramsen:noise:2.0.0'
+
+    //gravitySnapHelper
+    implementation 'com.github.rubensousa:gravitysnaphelper:2.2.2'
+
+    //Picasso BlurImage
+    implementation 'jp.wasabeef:picasso-transformations:2.2.1'
+    implementation 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
 }

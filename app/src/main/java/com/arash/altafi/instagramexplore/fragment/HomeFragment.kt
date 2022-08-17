@@ -31,7 +31,11 @@ class HomeFragment : Fragment() {
 
             btnMusic.setOnClickListener {
                 findNavController().navigate(
-                    HomeFragmentDirections.actionHomeFragmentToMusicFragment()
+                    HomeFragmentDirections.actionHomeFragmentToMusicFragment(
+                        title = "تست موزیک 1",
+                        url = "https://dls.music-fa.com/tagdl/1401/Abozar%20Roohi%20-%20Salam%20Farmande%20(320).mp3",
+                        background = "https://i1.delgarm.com/i/804/0102/31/62893a8f7aeef.jpeg"
+                    )
                 )
             }
 

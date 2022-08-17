@@ -29,7 +29,21 @@
         android:id="@+id/musicFragment"
         android:name="com.arash.altafi.instagramexplore.fragment.MusicFragment"
         android:label="fragment_music"
-        tools:layout="@layout/fragment_music" />
+        tools:layout="@layout/fragment_music">
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="url"
+            app:argType="string" />
+        <argument
+            android:name="background"
+            app:argType="string" />
+        <argument
+            android:name="duration"
+            android:defaultValue="0L"
+            app:argType="long"/>
+    </fragment>
     <fragment
         android:id="@+id/videoFragment"
         android:name="com.arash.altafi.instagramexplore.fragment.VideoFragment"
