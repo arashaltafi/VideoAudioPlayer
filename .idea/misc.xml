@@ -17,9 +17,18 @@
         <entry key="..\:/Users/Arash/Desktop/1/InstagramExplore/app/src/main/res/layout/layout_custom_toolbar.xml" value="0.25" />
         <entry key="app/src/main/res/drawable/ic_baseline_fullscreen_24.xml" value="0.13" />
         <entry key="app/src/main/res/drawable/ic_baseline_speed_24.xml" value="0.13" />
+        <entry key="app/src/main/res/drawable/ic_download.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_like.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_like_full.xml" value="0.1795" />
+        <entry key="app/src/main/res/drawable/ic_share.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_sound_off.xml" value="0.1795" />
+        <entry key="app/src/main/res/drawable/ic_sound_on.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_view.xml" value="0.1" />
         <entry key="app/src/main/res/layout/custom_video_player.xml" value="0.14947916666666666" />
+        <entry key="app/src/main/res/layout/fragment_instagram.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_music.xml" value="0.32083333333333336" />
         <entry key="app/src/main/res/layout/fragment_video.xml" value="0.14947916666666666" />
+        <entry key="app/src/main/res/layout/item_media.xml" value="0.16203703703703703" />
         <entry key="app/src/main/res/layout/layout_custom_toolbar.xml" value="0.14947916666666666" />
       </map>
     </option>

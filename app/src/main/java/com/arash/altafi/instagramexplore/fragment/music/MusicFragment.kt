@@ -1,4 +1,4 @@
-package com.arash.altafi.instagramexplore.fragment
+package com.arash.altafi.instagramexplore.fragment.music
 
 import android.content.Context
 import android.os.Bundle

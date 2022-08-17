@@ -25,7 +25,9 @@ class HomeFragment : Fragment() {
         binding.apply {
             btnInstagram.setOnClickListener {
                 findNavController().navigate(
-                    HomeFragmentDirections.actionHomeFragmentToInstagramFragment()
+                    HomeFragmentDirections.actionHomeFragmentToInstagramFragment(
+                        title = "اینستاگرام"
+                    )
                 )
             }
 

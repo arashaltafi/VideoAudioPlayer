@@ -1,4 +1,4 @@
-package com.arash.altafi.instagramexplore.fragment
+package com.arash.altafi.instagramexplore.fragment.video
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle

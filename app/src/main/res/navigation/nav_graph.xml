@@ -22,12 +22,19 @@
     </fragment>
     <fragment
         android:id="@+id/instagramFragment"
-        android:name="com.arash.altafi.instagramexplore.fragment.InstagramFragment"
+        android:name="com.arash.altafi.instagramexplore.fragment.media.InstagramFragment"
         android:label="fragment_instagram"
-        tools:layout="@layout/fragment_instagram" />
+        tools:layout="@layout/fragment_instagram" >
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_instagramFragment_to_videoFragment"
+            app:destination="@id/videoFragment" />
+    </fragment>
     <fragment
         android:id="@+id/musicFragment"
-        android:name="com.arash.altafi.instagramexplore.fragment.MusicFragment"
+        android:name="com.arash.altafi.instagramexplore.fragment.music.MusicFragment"
         android:label="fragment_music"
         tools:layout="@layout/fragment_music">
         <argument
@@ -46,7 +53,7 @@
     </fragment>
     <fragment
         android:id="@+id/videoFragment"
-        android:name="com.arash.altafi.instagramexplore.fragment.VideoFragment"
+        android:name="com.arash.altafi.instagramexplore.fragment.video.VideoFragment"
         android:label="fragment_video"
         tools:layout="@layout/fragment_video">
         <argument

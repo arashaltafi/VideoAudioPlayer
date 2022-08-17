@@ -4,10 +4,16 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
+import android.net.Uri
+import android.os.Build
+import android.os.StrictMode
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.DisplayMetrics
@@ -21,22 +27,27 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.FileProvider
 import androidx.core.view.GestureDetectorCompat
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.arash.altafi.instagramexplore.R
 import com.arash.altafi.instagramexplore.utils.Utils.speedMedia
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.exoplayer2.*
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import java.io.File
+import java.io.FileOutputStream
 import java.lang.Exception
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.HashMap
+import kotlin.coroutines.CoroutineContext
 import kotlin.math.hypot
 import kotlin.math.roundToInt
 
@@ -429,9 +440,154 @@ fun ImageView.setImage(url: String, onSuccess: (() -> Unit)? = null, onError: ((
             }
         })
 }
+fun Context.share(text: String) {
+    val sendIntent: Intent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, text)
+        type = "text/plain"
+    }
+
+    val shareIntent = Intent.createChooser(sendIntent, null)
+    startActivity(shareIntent)
+}
+
+fun Context.shareTextWithImage(
+    applicationId: String,
+    bitmap: Bitmap,
+    body: String,
+    title: String,
+    subject: String
+) {
+    val file = File(externalCacheDir, System.currentTimeMillis().toString() + ".jpg")
+    val out = FileOutputStream(file)
+    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
+    out.close()
+    val bmpUri = if (Build.VERSION.SDK_INT < 24) {
+        Uri.fromFile(file)
+    } else {
+        FileProvider.getUriForFile(
+            this, "$applicationId.fileprovider", file
+        )
+    }
+
+    val builder: StrictMode.VmPolicy.Builder = StrictMode.VmPolicy.Builder()
+    StrictMode.setVmPolicy(builder.build())
+
+    val sendIntent = Intent().apply {
+        action = Intent.ACTION_SEND
+        type = "image/*"
+        putExtra(Intent.EXTRA_TEXT, title + "\n\n" + body)
+        putExtra(Intent.EXTRA_TITLE, title)
+        putExtra(Intent.EXTRA_SUBJECT, subject)
+        putExtra(Intent.EXTRA_STREAM, bmpUri)
+    }
+
+    val shareIntent = Intent.createChooser(sendIntent, "Share News")
+    startActivity(shareIntent)
+}
 
 fun ImageView.setImage(drawable: Int) {
     Picasso.get()
         .load(drawable)
         .into(this)
 }
+
+fun Context.toast(msg: String) {
+    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+}
+
+fun Context.openURL(url: String) {
+    try {
+        val fullUrl = if (url.startsWith("http")) url else "http://$url"
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(fullUrl))
+        startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        e.printStackTrace()
+    }
+}
+
+fun Context.openDownloadURL(url: String) {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    when {
+        this.isInstalled("com.android.chrome") -> intent.setPackage("com.android.chrome")
+        this.isInstalled("org.mozilla.firefox") -> intent.setPackage("org.mozilla.firefox")
+        this.isInstalled("com.opera.mini.android") -> intent.setPackage("com.opera.mini.android")
+        this.isInstalled("com.opera.mini.android.Browser") -> intent.setPackage("com.opera.mini.android.Browser")
+        else -> this.openURL(url)
+    }
+    startActivity(intent)
+}
+
+private fun Context.isInstalled(packageName: String): Boolean {
+    return try {
+        this.packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
+        true
+    } catch (e: PackageManager.NameNotFoundException) {
+        false
+    }
+}
+
+fun ViewModel.viewModel(
+    block: suspend CoroutineScope.() -> Unit,
+) = viewModelScope.launch { block(this) }
+
+
+fun ViewModel.viewModelIO(
+    block: suspend CoroutineScope.() -> Unit,
+) = viewModelScope.launch(Dispatchers.IO) { block(this) }
+
+
+val coroutineIO get() = CoroutineScope(Dispatchers.IO + Job())
+
+fun ViewModel.viewModelCompute(
+    block: suspend CoroutineScope.() -> Unit,
+) = viewModelScope.launch(Dispatchers.Default) { block(this) }
+
+val normalIO get() = CoroutineScope(Dispatchers.IO + Job())
+
+fun normalIO(
+    scope: CoroutineScope = normalIO,
+    block: suspend CoroutineScope.() -> Unit,
+) = scope.launch { coroutineScope(block) }
+
+val supervisorIO get() = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
+fun supervisorIO(
+    scope: CoroutineScope = supervisorIO,
+    block: suspend CoroutineScope.() -> Unit,
+) = scope.launch { supervisorScope(block) }
+
+fun CoroutineScope.superLaunch(
+    context: CoroutineContext? = null,
+    block: suspend CoroutineScope.() -> Unit,
+) = if (context != null)
+    launch(context) { supervisorScope(block) }
+else launch { supervisorScope(block) }
+
+fun <T> CoroutineScope.asyncCompute(
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend CoroutineScope.() -> T
+) = async(Dispatchers.Default, start, block)
+
+fun <T> CoroutineScope.asyncIO(
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend CoroutineScope.() -> T
+) = async(Dispatchers.IO, start, block)
+
+fun <T> CoroutineScope.asyncMain(
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend CoroutineScope.() -> T
+) = async(Dispatchers.Main.immediate, start, block)
+
+suspend fun <T> withIO(
+    block: suspend CoroutineScope.() -> T,
+) = withContext(Dispatchers.IO) { block(this) }
+
+suspend fun <T> withCompute(
+    block: suspend CoroutineScope.() -> T,
+) = withContext(Dispatchers.Default) { block(this) }
+
+suspend fun <T> withMain(
+    block: suspend CoroutineScope.() -> T,
+) = withContext(Dispatchers.Main.immediate) { block(this) }
