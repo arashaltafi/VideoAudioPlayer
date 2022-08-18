@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layoutDirection="rtl"
-    android:layout_marginBottom="32dp">
+    android:layout_marginBottom="32dp"
+    android:layoutDirection="rtl">
 
     <FrameLayout
         android:id="@+id/rlMedia"
@@ -22,46 +22,9 @@
             android:layout_height="match_parent"
             android:scaleType="fitXY" />
 
-        <com.google.android.exoplayer2.ui.StyledPlayerView
-            android:id="@+id/videoPlayer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layoutDirection="ltr"
-            app:use_controller="false" />
-
         <RelativeLayout
-            android:id="@+id/rlVideo"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:visibility="visible" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivSound"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="24dp"
-                android:layout_marginBottom="16dp"
-                app:srcCompat="@drawable/ic_sound_on" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tvTimeVideo"
-                style="@style/txt.h1.medium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="16dp"
-                tools:text="01:25" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cvView"
@@ -70,10 +33,10 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginEnd="24dp"
-                android:elevation="0dp"
-                app:cardElevation="0dp"
                 android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="#40000000">
+                android:elevation="0dp"
+                app:cardBackgroundColor="#40000000"
+                app:cardElevation="0dp">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="wrap_content"

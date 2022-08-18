@@ -1,14 +1,12 @@
 package com.arash.altafi.instagramexplore.fragment.media.adapter
 
 import android.content.Context
-import android.content.ContextWrapper
 import android.util.AttributeSet
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.arash.altafi.instagramexplore.fragment.media.adapter.VideoViewItem.Companion.ITEM_VIEW_TYPE_VIDEO
 import com.arash.altafi.instagramexplore.utils.Utils.getScreenHeight
 import com.arash.altafi.instagramexplore.utils.Utils.getScreenWidth
 import com.google.android.exoplayer2.ExoPlayer
@@ -139,7 +137,8 @@ class VideoRecyclerView @JvmOverloads constructor(
     }
 
     private fun VideoAdapter.isItemVideo(position: Int): Boolean {
-        return position != NO_POSITION && getItemViewType(position) == ITEM_VIEW_TYPE_VIDEO
+        return position != NO_POSITION && getItemViewType(position) == VideoAdapter.TYPE_VIDEO
+                || getItemViewType(position) == VideoAdapter.TYPE_MUSIC
     }
 }
 

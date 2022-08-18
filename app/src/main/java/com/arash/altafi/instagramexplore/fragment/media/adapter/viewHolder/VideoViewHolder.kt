@@ -1,4 +1,4 @@
-package com.arash.altafi.instagramexplore.fragment.media.adapter
+package com.arash.altafi.instagramexplore.fragment.media.adapter.viewHolder
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -12,9 +12,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.arash.altafi.instagramexplore.R
 import com.arash.altafi.instagramexplore.databinding.ItemMediaBinding
 import com.arash.altafi.instagramexplore.ext.*
-import com.arash.altafi.instagramexplore.fragment.media.InstagramFragment
 import com.arash.altafi.instagramexplore.fragment.media.InstagramFragmentDirections
+import com.arash.altafi.instagramexplore.fragment.media.MediaResponse
 import com.arash.altafi.instagramexplore.fragment.media.TypeMedia
+import com.arash.altafi.instagramexplore.fragment.media.adapter.VideoAdapter
+import com.arash.altafi.instagramexplore.fragment.media.adapter.VideoPlayerEventListener
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
@@ -30,7 +32,7 @@ class VideoViewHolder(bindingMedia: ItemMediaBinding) :
         private const val TAG = "VideoViewHolder"
     }
 
-    private var item: VideoViewItem.VideoItem? = null
+    private lateinit var item: MediaResponse
     private lateinit var typeMedia: TypeMedia
     private var isLike = false
     private val binding = bindingMedia
@@ -41,11 +43,11 @@ class VideoViewHolder(bindingMedia: ItemMediaBinding) :
     private var videoAdapter: VideoAdapter? = null
 
     @SuppressLint("ClickableViewAccessibility")
-    fun bind(videoItem: VideoViewItem.VideoItem, adapter: VideoAdapter) {
+    fun bind(videoItem: MediaResponse, adapter: VideoAdapter) {
         item = videoItem
         videoAdapter = adapter
 
-        with(videoItem.video) {
+        with(item) {
             runJob()
 
             typeMedia = type
@@ -54,44 +56,6 @@ class VideoViewHolder(bindingMedia: ItemMediaBinding) :
                 val context = itemView.context
 
                 setSound(context, adapter.isMuted.value, false)
-
-                when (typeMedia) {
-                    TypeMedia.VIDEO -> {
-                        videoPlayer.toShow()
-                        rlVideo.toShow()
-                        ivSound.toShow()
-                        tvTimeVideo.toShow()
-                        cvView.toShow()
-                        ivBackgroundMusic.toGone()
-                        ivMusic.toGone()
-                        ivBackground.toShow()
-                    }
-                    TypeMedia.IMAGE -> {
-                        videoPlayer.toShow()
-                        rlVideo.toGone()
-                        ivBackgroundMusic.toGone()
-                        ivMusic.toGone()
-                        ivBackground.toShow()
-                    }
-                    TypeMedia.MUSIC -> {
-                        videoPlayer.toGone()
-                        ivBackground.toGone()
-                        rlVideo.toShow()
-                        ivSound.toGone()
-                        tvTimeVideo.toGone()
-                        cvView.toGone()
-                        ivBackgroundMusic.toShow()
-                        ivMusic.toShow()
-                    }
-                }
-
-                if (imageUrl?.isNotEmpty() == true) {
-                    ivMusic.setImage(imageUrl)
-                    ivBackgroundMusic.setBlurImage(imageUrl)
-                } else {
-                    ivMusic.setImage(R.drawable.ic_launcher_background)
-                    ivBackgroundMusic.setBlurImage(R.drawable.ic_launcher_background)
-                }
 
                 Glide.with(context).load(url)
                     .thumbnail(Glide.with(context).load(url))
@@ -292,8 +256,7 @@ class VideoViewHolder(bindingMedia: ItemMediaBinding) :
 
     private fun ExoPlayer.playVideo() {
         stop()
-        val videoUrl = item?.video?.url ?: return
-        initialize(binding.videoPlayer, "title", videoUrl)
+        initialize(binding.videoPlayer, "title", item.url)
         binding.videoPlayer.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT
     }
 }
