@@ -123,7 +123,7 @@ class MusicViewHolder(bindingMedia: ItemMusicBinding) :
                     return@setOnTouchListener gestureDetector.onTouchEvent(event)
                 }
 
-                tvTimeVideo.text = musicPlayer.player?.duration?.convertDurationToTime()
+                tvTimeMusic.text = musicPlayer.player?.duration?.convertDurationToTime()
             }
         }
     }
@@ -175,13 +175,11 @@ class MusicViewHolder(bindingMedia: ItemMusicBinding) :
                             "launchWhenResumed @$absoluteAdapterPosition launch".logI(TAG)
                             timeNow = musicPlayer.player?.currentPosition ?: 0
                             if (timeNow >= 0) {
-                                cvTimeVideo.toShow()
-                                tvTimeVideo.toShow()
-                                tvTimeVideo.text = (timeVideo - timeNow).convertDurationToTime()
+                                cvTimeMusic.toShow()
+                                tvTimeMusic.text = (timeVideo - timeNow).convertDurationToTime()
                                 "videoDuration: $timeNow".logE(TAG)
                             } else {
-                                cvTimeVideo.toGone()
-                                tvTimeVideo.toGone()
+                                cvTimeMusic.toGone()
                             }
                             delay(1000)
                         }
@@ -244,7 +242,7 @@ class MusicViewHolder(bindingMedia: ItemMusicBinding) :
 
     private fun runJob() = binding.apply {
         if (item.type == TypeMedia.LIVE) {
-            cvTimeVideo.toGone()
+            cvTimeMusic.toGone()
         } else {
             if (playerJob == null || playerJob?.isCancelled == true) {
                 setupVideoDuration().also {

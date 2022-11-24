@@ -183,12 +183,10 @@ class VideoViewHolder(bindingMedia: ItemVideoBinding) :
                             timeNow = videoPlayer.player?.currentPosition ?: 0
                             if (timeNow >= 0) {
                                 cvTimeVideo.toShow()
-                                tvTimeVideo.toShow()
                                 tvTimeVideo.text = (timeVideo - timeNow).convertDurationToTime()
                                 "videoDuration: $timeNow".logE(TAG)
                             } else {
                                 cvTimeVideo.toGone()
-                                tvTimeVideo.toGone()
                             }
                             delay(1000)
                         }

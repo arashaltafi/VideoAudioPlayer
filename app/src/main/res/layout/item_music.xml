@@ -73,7 +73,7 @@
                 app:srcCompat="@drawable/ic_sound_on" />
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cvTimeVideo"
+                android:id="@+id/cvTimeMusic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -87,7 +87,7 @@
                 tools:visibility="visible">
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tvTimeVideo"
+                    android:id="@+id/tvTimeMusic"
                     style="@style/txt.h1.medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
