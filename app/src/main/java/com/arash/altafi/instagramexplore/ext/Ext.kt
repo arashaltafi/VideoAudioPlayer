@@ -179,12 +179,12 @@ fun View.reveal(
     ).apply {
         setDuration(duration)
         addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationStart(animation: Animator?) {
+            override fun onAnimationStart(animation: Animator) {
                 super.onAnimationStart(animation)
                 toShow()
             }
 
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
                 enable()
                 endListener?.invoke()
@@ -213,12 +213,12 @@ fun View.unReveal(
     ).apply {
         setDuration(duration)
         addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationStart(animation: Animator?) {
+            override fun onAnimationStart(animation: Animator) {
                 super.onAnimationStart(animation)
                 disable()
             }
 
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
                 toHide()
                 endListener?.invoke()
@@ -348,11 +348,13 @@ fun ExoPlayer.speedDialog(context: Context) {
 }
 
 fun ExoPlayer.initialize(
-    videoPlayer: com.google.android.exoplayer2.ui.StyledPlayerView,
+    videoPlayer: com.google.android.exoplayer2.ui.StyledPlayerView? = null,
+    musicPlayer: com.google.android.exoplayer2.ui.PlayerControlView? = null,
     title: String,
     url: String,
 ) {
-    videoPlayer.player = this
+    videoPlayer?.player = this
+    musicPlayer?.player = this
 
     val mediaItem: MediaItem = MediaItem.Builder()
         .setUri(url)
@@ -368,10 +370,14 @@ fun ExoPlayer.initialize(
     this.setMediaItem(mediaItem)
     this.prepare()
     this.playWhenReady = true
-    videoPlayer.requestFocus()
-    videoPlayer.setShowFastForwardButton(true)
-    videoPlayer.setShowNextButton(false)
-    videoPlayer.setShowPreviousButton(false)
+    videoPlayer?.requestFocus()
+    musicPlayer?.requestFocus()
+    videoPlayer?.setShowFastForwardButton(true)
+    musicPlayer?.setShowFastForwardButton(true)
+    videoPlayer?.setShowNextButton(false)
+    musicPlayer?.setShowNextButton(false)
+    videoPlayer?.setShowPreviousButton(false)
+    musicPlayer?.setShowPreviousButton(false)
 }
 
 fun Long.convertDurationToTime(): String {

@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.arash.altafi.instagramexplore.databinding.ItemImageBinding
-import com.arash.altafi.instagramexplore.databinding.ItemMediaBinding
 import com.arash.altafi.instagramexplore.databinding.ItemMusicBinding
+import com.arash.altafi.instagramexplore.databinding.ItemVideoBinding
 import com.arash.altafi.instagramexplore.fragment.media.MediaResponse
 import com.arash.altafi.instagramexplore.fragment.media.TypeMedia
 import com.arash.altafi.instagramexplore.fragment.media.adapter.viewHolder.ImageViewHolder
@@ -20,7 +20,7 @@ class VideoAdapter :
     var isMuted = MutableStateFlow(false)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val bindingVideo = ItemMediaBinding
+        val bindingVideo = ItemVideoBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
         val bindingImage = ItemImageBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
@@ -48,6 +48,7 @@ class VideoAdapter :
     override fun getItemViewType(position: Int): Int {
         return when(list[position].type) {
             TypeMedia.VIDEO -> TYPE_VIDEO
+            TypeMedia.LIVE -> TYPE_VIDEO
             TypeMedia.MUSIC -> TYPE_MUSIC
             TypeMedia.IMAGE -> TYPE_IMAGE
         }

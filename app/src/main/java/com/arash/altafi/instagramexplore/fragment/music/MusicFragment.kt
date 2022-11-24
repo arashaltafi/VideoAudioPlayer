@@ -112,7 +112,7 @@ class MusicFragment : Fragment() {
                 .setSeekForwardIncrementMs(10000)
                 .build()
 
-            player?.initialize(musicPlayer, title, url)
+            player?.initialize(musicPlayer = musicPlayer, title = title, url = url)
             player?.seekTo(args.duration)
 
             if (musicPlayer.player?.isPlaying == true) {

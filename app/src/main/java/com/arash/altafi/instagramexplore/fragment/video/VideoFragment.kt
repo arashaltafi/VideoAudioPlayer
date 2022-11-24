@@ -63,7 +63,7 @@ class VideoFragment : Fragment() {
                 .setSeekForwardIncrementMs(10000)
                 .build()
 
-            player?.initialize(videoPlayer, title, url)
+            player?.initialize(videoPlayer = videoPlayer, title = title, url = url)
             player?.seekTo(args.duration)
 
             if (videoPlayer.player?.isPlaying == true) {
@@ -181,6 +181,7 @@ class VideoFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         binding.videoPlayer.player?.playWhenReady
+        player?.play()
     }
 
     override fun onDestroyView() {

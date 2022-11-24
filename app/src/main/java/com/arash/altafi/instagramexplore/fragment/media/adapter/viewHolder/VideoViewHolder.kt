@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.arash.altafi.instagramexplore.R
-import com.arash.altafi.instagramexplore.databinding.ItemMediaBinding
+import com.arash.altafi.instagramexplore.databinding.ItemVideoBinding
 import com.arash.altafi.instagramexplore.ext.*
 import com.arash.altafi.instagramexplore.fragment.media.InstagramFragmentDirections
 import com.arash.altafi.instagramexplore.fragment.media.MediaResponse
@@ -24,7 +24,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class VideoViewHolder(bindingMedia: ItemMediaBinding) :
+class VideoViewHolder(bindingMedia: ItemVideoBinding) :
     RecyclerView.ViewHolder(bindingMedia.root),
     VideoPlayerEventListener {
 
@@ -105,7 +105,7 @@ class VideoViewHolder(bindingMedia: ItemMediaBinding) :
                         }
 
                         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                            if (typeMedia == TypeMedia.VIDEO)
+                            if (typeMedia == TypeMedia.VIDEO || typeMedia == TypeMedia.LIVE)
                                 Navigation.findNavController(videoPlayer).navigate(
                                     InstagramFragmentDirections.actionInstagramFragmentToVideoFragment(
                                         title,
@@ -113,7 +113,7 @@ class VideoViewHolder(bindingMedia: ItemMediaBinding) :
                                         videoPlayer.player?.currentPosition ?: 0
                                     )
                                 )
-                            return typeMedia == TypeMedia.VIDEO
+                            return typeMedia == TypeMedia.VIDEO || typeMedia == TypeMedia.LIVE
                         }
 
                         override fun onDoubleTap(e: MotionEvent): Boolean {
@@ -182,10 +182,12 @@ class VideoViewHolder(bindingMedia: ItemMediaBinding) :
                             "launchWhenResumed @$absoluteAdapterPosition launch".logI(TAG)
                             timeNow = videoPlayer.player?.currentPosition ?: 0
                             if (timeNow >= 0) {
+                                cvTimeVideo.toShow()
                                 tvTimeVideo.toShow()
                                 tvTimeVideo.text = (timeVideo - timeNow).convertDurationToTime()
                                 "videoDuration: $timeNow".logE(TAG)
                             } else {
+                                cvTimeVideo.toGone()
                                 tvTimeVideo.toGone()
                             }
                             delay(1000)
@@ -210,7 +212,8 @@ class VideoViewHolder(bindingMedia: ItemMediaBinding) :
         binding.apply {
             videoPlayer.toGone()
             ivBackground.toShow()
-            if (typeMedia == TypeMedia.VIDEO) progressBar.toShow() else progressBar.toGone()
+            if (typeMedia == TypeMedia.VIDEO || typeMedia == TypeMedia.LIVE) progressBar.toShow()
+            else progressBar.toGone()
             //play video
             with(player) {
                 playVideo()
@@ -225,7 +228,8 @@ class VideoViewHolder(bindingMedia: ItemMediaBinding) :
             videoPlayer.player = null
             videoPlayer.toGone()
             ivBackground.toShow()
-            if (typeMedia == TypeMedia.VIDEO) progressBar.toShow() else progressBar.toGone()
+            if (typeMedia == TypeMedia.VIDEO || typeMedia == TypeMedia.LIVE) progressBar.toShow()
+            else progressBar.toGone()
         }
 
         playerJob?.cancel()
@@ -237,7 +241,8 @@ class VideoViewHolder(bindingMedia: ItemMediaBinding) :
             setSound(binding.root.context, videoAdapter?.isMuted?.value == true, false)
 
             if (videoPlayer.player != null) {
-                if (typeMedia == TypeMedia.VIDEO) videoPlayer.toShow() else videoPlayer.toGone()
+                if (typeMedia == TypeMedia.VIDEO || typeMedia == TypeMedia.LIVE) videoPlayer.toShow()
+                else videoPlayer.toGone()
                 ivBackground.toGone()
                 progressBar.toGone()
                 timeVideo = videoPlayer.player?.duration ?: 0
@@ -246,17 +251,21 @@ class VideoViewHolder(bindingMedia: ItemMediaBinding) :
         }
     }
 
-    private fun runJob() {
-        if (playerJob == null || playerJob?.isCancelled == true) {
-            setupVideoDuration().also {
-                playerJob?.start()
+    private fun runJob() = binding.apply {
+        if (item.type == TypeMedia.LIVE) {
+            cvTimeVideo.toGone()
+        } else {
+            if (playerJob == null || playerJob?.isCancelled == true) {
+                setupVideoDuration().also {
+                    playerJob?.start()
+                }
             }
         }
     }
 
     private fun ExoPlayer.playVideo() {
         stop()
-        initialize(binding.videoPlayer, "title", item.url)
+        initialize(videoPlayer = binding.videoPlayer, title = "title", url = item.url)
         binding.videoPlayer.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT
     }
 }

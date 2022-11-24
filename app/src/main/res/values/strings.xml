@@ -1,12 +1,21 @@
 <resources>
     <string name="app_name">InstagramExplore</string>
-    <string name="search">جستجو</string>
-    <string name="normal">عادی</string>
-    <string name="video_speed">سرعت پخش</string>
+    <string name="search">search</string>
+    <string name="normal">normal</string>
+    <string name="video_speed">speed</string>
     <string name="speed_media">%s برابر</string>
-    <string name="sound_muted">صدا قطع شد!</string>
-    <string name="sound_un_mute">صدا وصل شد!</string>
-    <string name="liked">لایک شد!</string>
-    <string name="unlike">لایک برداشته شد!</string>
-    <string name="lorem">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد، کتابهای زیادی در شصت و سه درصد گذشته حال و آینده، شناخت فراوان جامعه و متخصصان را می طلبد، تا با نرم افزارها شناخت بیشتری را برای طراحان رایانه ای علی الخصوص طراحان خلاقی، و فرهنگ پیشرو در زبان فارسی ایجاد کرد، در این صورت می توان امید داشت که تمام و دشواری موجود در ارائه راهکارها، و شرایط سخت تایپ به پایان رسد و زمان مورد نیاز شامل حروفچینی دستاوردهای اصلی، و جوابگوی سوالات پیوسته اهل دنیای موجود طراحی اساسا مورد استفاده قرار گیرد</string>
+    <string name="sound_muted">Sound Off!</string>
+    <string name="sound_un_mute">Sound On!</string>
+    <string name="liked">Like!</string>
+    <string name="video_title">video title</string>
+    <string name="live_title">live title</string>
+    <string name="music_title">music title</string>
+    <string name="image_title">image title</string>
+    <string name="minute_59">59 Minute</string>
+    <string name="minute_35">35 Minute</string>
+    <string name="minute_20">2 Minute</string>
+    <string name="hour_2">2 Hour</string>
+    <string name="hour_5">5 Hour</string>
+    <string name="unlike">DisLike!</string>
+    <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
 </resources>

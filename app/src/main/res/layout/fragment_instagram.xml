@@ -31,7 +31,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:itemCount="1"
-            tools:listitem="@layout/item_media" />
+            tools:listitem="@layout/item_video" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

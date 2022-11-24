@@ -7,19 +7,16 @@ import android.view.MotionEvent
 import androidx.core.view.GestureDetectorCompat
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.arash.altafi.instagramexplore.R
 import com.arash.altafi.instagramexplore.databinding.ItemMusicBinding
 import com.arash.altafi.instagramexplore.ext.*
-import com.arash.altafi.instagramexplore.fragment.media.InstagramFragmentDirections
 import com.arash.altafi.instagramexplore.fragment.media.MediaResponse
 import com.arash.altafi.instagramexplore.fragment.media.TypeMedia
 import com.arash.altafi.instagramexplore.fragment.media.adapter.VideoAdapter
 import com.arash.altafi.instagramexplore.fragment.media.adapter.VideoPlayerEventListener
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -108,21 +105,9 @@ class MusicViewHolder(bindingMedia: ItemMusicBinding) :
                     GestureDetectorCompat(itemView.context, object :
                         GestureDetector.SimpleOnGestureListener() {
 
-                        override fun onDown(e: MotionEvent): Boolean {
-                            return true
-                        }
+                        override fun onDown(e: MotionEvent): Boolean = true
 
-                        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                            if (typeMedia == TypeMedia.VIDEO)
-                                Navigation.findNavController(videoPlayer).navigate(
-                                    InstagramFragmentDirections.actionInstagramFragmentToVideoFragment(
-                                        title,
-                                        url,
-                                        videoPlayer.player?.currentPosition ?: 0
-                                    )
-                                )
-                            return typeMedia == TypeMedia.VIDEO
-                        }
+                        override fun onSingleTapConfirmed(e: MotionEvent): Boolean = true
 
                         override fun onDoubleTap(e: MotionEvent): Boolean {
                             like(context)
@@ -138,7 +123,7 @@ class MusicViewHolder(bindingMedia: ItemMusicBinding) :
                     return@setOnTouchListener gestureDetector.onTouchEvent(event)
                 }
 
-                tvTimeVideo.text = videoPlayer.player?.duration?.convertDurationToTime()
+                tvTimeVideo.text = musicPlayer.player?.duration?.convertDurationToTime()
             }
         }
     }
@@ -148,12 +133,12 @@ class MusicViewHolder(bindingMedia: ItemMusicBinding) :
             Glide.with(context).load(R.drawable.ic_sound_off).into(ivSound)
             if (notify)
                 context.toast(context.getString(R.string.sound_muted))
-            videoPlayer.player?.volume = 0f
+            musicPlayer.player?.volume = 0f
         } else {
             Glide.with(context).load(R.drawable.ic_sound_on).into(ivSound)
             if (notify)
                 context.toast(context.getString(R.string.sound_un_mute))
-            videoPlayer.player?.volume = 1f
+            musicPlayer.player?.volume = 1f
         }
 
         videoAdapter?.isMuted?.tryEmit(mute)
@@ -188,12 +173,14 @@ class MusicViewHolder(bindingMedia: ItemMusicBinding) :
                     launch {
                         while (true) {
                             "launchWhenResumed @$absoluteAdapterPosition launch".logI(TAG)
-                            timeNow = videoPlayer.player?.currentPosition ?: 0
+                            timeNow = musicPlayer.player?.currentPosition ?: 0
                             if (timeNow >= 0) {
+                                cvTimeVideo.toShow()
                                 tvTimeVideo.toShow()
                                 tvTimeVideo.text = (timeVideo - timeNow).convertDurationToTime()
                                 "videoDuration: $timeNow".logE(TAG)
                             } else {
+                                cvTimeVideo.toGone()
                                 tvTimeVideo.toGone()
                             }
                             delay(1000)
@@ -216,13 +203,14 @@ class MusicViewHolder(bindingMedia: ItemMusicBinding) :
     override fun onPrePlay(player: ExoPlayer) {
         "onPrePlay @$absoluteAdapterPosition".logD(TAG)
         binding.apply {
-            videoPlayer.toGone()
+            musicPlayer.toGone()
             ivBackground.toShow()
-            if (typeMedia == TypeMedia.VIDEO) progressBar.toShow() else progressBar.toGone()
+            if (typeMedia == TypeMedia.MUSIC) progressBar.toShow()
+            else progressBar.toGone()
             //play video
             with(player) {
                 playVideo()
-                videoPlayer.player = this
+                musicPlayer.player = this
             }
         }
     }
@@ -230,10 +218,10 @@ class MusicViewHolder(bindingMedia: ItemMusicBinding) :
     override fun onPlayCanceled() {
         "onPlayCanceled @$absoluteAdapterPosition".logD(TAG)
         binding.apply {
-            videoPlayer.player = null
-            videoPlayer.toGone()
+            musicPlayer.player = null
+            musicPlayer.toGone()
             ivBackground.toShow()
-            if (typeMedia == TypeMedia.VIDEO) progressBar.toShow() else progressBar.toGone()
+            if (typeMedia == TypeMedia.MUSIC) progressBar.toShow() else progressBar.toGone()
         }
 
         playerJob?.cancel()
@@ -244,27 +232,31 @@ class MusicViewHolder(bindingMedia: ItemMusicBinding) :
         binding.apply {
             setSound(binding.root.context, videoAdapter?.isMuted?.value == true, false)
 
-            if (videoPlayer.player != null) {
-                if (typeMedia == TypeMedia.VIDEO) videoPlayer.toShow() else videoPlayer.toGone()
+            if (musicPlayer.player != null) {
+                if (typeMedia == TypeMedia.MUSIC) musicPlayer.toShow() else musicPlayer.toGone()
                 ivBackground.toGone()
                 progressBar.toGone()
-                timeVideo = videoPlayer.player?.duration ?: 0
+                timeVideo = musicPlayer.player?.duration ?: 0
             }
             runJob()
         }
     }
 
-    private fun runJob() {
-        if (playerJob == null || playerJob?.isCancelled == true) {
-            setupVideoDuration().also {
-                playerJob?.start()
+    private fun runJob() = binding.apply {
+        if (item.type == TypeMedia.LIVE) {
+            cvTimeVideo.toGone()
+        } else {
+            if (playerJob == null || playerJob?.isCancelled == true) {
+                setupVideoDuration().also {
+                    playerJob?.start()
+                }
             }
         }
     }
 
     private fun ExoPlayer.playVideo() {
         stop()
-        initialize(binding.videoPlayer, "title", item.url)
-        binding.videoPlayer.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT
+        initialize(musicPlayer = binding.musicPlayer, title = "title", url = item.url)
+//        binding.musicPlayer.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT
     }
 }

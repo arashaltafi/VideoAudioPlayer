@@ -26,7 +26,7 @@ class HomeFragment : Fragment() {
             btnInstagram.setOnClickListener {
                 findNavController().navigate(
                     HomeFragmentDirections.actionHomeFragmentToInstagramFragment(
-                        title = "اینستاگرام"
+                        title = "Instagram"
                     )
                 )
             }
@@ -34,9 +34,9 @@ class HomeFragment : Fragment() {
             btnMusic.setOnClickListener {
                 findNavController().navigate(
                     HomeFragmentDirections.actionHomeFragmentToMusicFragment(
-                        title = "تست موزیک 1",
-                        url = "https://dls.music-fa.com/tagdl/1401/Abozar%20Roohi%20-%20Salam%20Farmande%20(320).mp3",
-                        background = "https://i1.delgarm.com/i/804/0102/31/62893a8f7aeef.jpeg"
+                        title = "Test Music",
+                        url = "https://irsv.upmusics.com/Downloads/Musics/Aron%20Afshar%20-%20Tabibe%20Maher%20(128).mp3",
+                        background = "https://upmusics.com/wp-content/uploads/2019/03/giuklj.jpg"
                     )
                 )
             }
@@ -44,8 +44,8 @@ class HomeFragment : Fragment() {
             btnVideo.setOnClickListener {
                 findNavController().navigate(
                     HomeFragmentDirections.actionHomeFragmentToVideoFragment(
-                        title = "تست فیلم 1",
-                        url = "https://videos1.varzeshe3.com/videos-quality/2022/06/28/B/naiqrfhh.mp4"
+                        title = "Test Video",
+                        url = "https://upmusics.com/wp-content/uploads/2021/01/143971813_1338518893210690_8280265321842515046_n.mp4"
                     )
                 )
             }

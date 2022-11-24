@@ -13,6 +13,7 @@ data class MediaResponse(
 
 enum class TypeMedia {
     VIDEO,
+    LIVE,
     MUSIC,
     IMAGE
 }

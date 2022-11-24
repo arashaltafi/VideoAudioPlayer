@@ -52,16 +52,31 @@
                 android:layout_marginBottom="16dp"
                 app:srcCompat="@drawable/ic_sound_on" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tvTimeVideo"
-                style="@style/txt.h1.medium"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cvTimeVideo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
-                tools:text="01:25" />
+                android:elevation="0dp"
+                android:visibility="invisible"
+                app:cardBackgroundColor="#40000000"
+                app:cardElevation="0dp"
+                tools:visibility="visible">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tvTimeVideo"
+                    style="@style/txt.h1.medium"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="2dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    tools:text="01:25" />
+
+            </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cvView"
