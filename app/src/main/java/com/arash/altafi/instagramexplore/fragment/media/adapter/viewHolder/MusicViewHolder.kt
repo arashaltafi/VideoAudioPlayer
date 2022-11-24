@@ -52,6 +52,8 @@ class MusicViewHolder(bindingMedia: ItemMusicBinding) :
             binding.apply {
                 val context = itemView.context
 
+                musicPlayer.hide()
+
                 setSound(context, adapter.isMuted.value, false)
 
                 if (imageUrl?.isNotEmpty() == true) {
@@ -254,7 +256,7 @@ class MusicViewHolder(bindingMedia: ItemMusicBinding) :
 
     private fun ExoPlayer.playVideo() {
         stop()
-        initialize(musicPlayer = binding.musicPlayer, title = "title", url = item.url)
+        initialize(musicViewHolder = binding.musicPlayer, title = "title", url = item.url)
 //        binding.musicPlayer.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT
     }
 }

@@ -350,11 +350,13 @@ fun ExoPlayer.speedDialog(context: Context) {
 fun ExoPlayer.initialize(
     videoPlayer: com.google.android.exoplayer2.ui.StyledPlayerView? = null,
     musicPlayer: com.google.android.exoplayer2.ui.PlayerControlView? = null,
+    musicViewHolder: com.google.android.exoplayer2.ui.StyledPlayerControlView? = null,
     title: String,
     url: String,
 ) {
     videoPlayer?.player = this
     musicPlayer?.player = this
+    musicViewHolder?.player = this
 
     val mediaItem: MediaItem = MediaItem.Builder()
         .setUri(url)
@@ -372,12 +374,16 @@ fun ExoPlayer.initialize(
     this.playWhenReady = true
     videoPlayer?.requestFocus()
     musicPlayer?.requestFocus()
+    musicViewHolder?.requestFocus()
     videoPlayer?.setShowFastForwardButton(true)
     musicPlayer?.setShowFastForwardButton(true)
+    musicViewHolder?.setShowFastForwardButton(true)
     videoPlayer?.setShowNextButton(false)
     musicPlayer?.setShowNextButton(false)
+    musicViewHolder?.setShowNextButton(false)
     videoPlayer?.setShowPreviousButton(false)
     musicPlayer?.setShowPreviousButton(false)
+    musicViewHolder?.setShowPreviousButton(false)
 }
 
 fun Long.convertDurationToTime(): String {
