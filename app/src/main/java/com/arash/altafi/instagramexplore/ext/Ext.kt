@@ -3,6 +3,7 @@ package com.arash.altafi.instagramexplore.ext
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -10,6 +11,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.media.AudioManager
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
@@ -37,6 +39,7 @@ import com.arash.altafi.instagramexplore.R
 import com.arash.altafi.instagramexplore.utils.Utils.speedMedia
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.util.MimeTypes
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
@@ -353,15 +356,16 @@ fun ExoPlayer.initialize(
     musicViewHolder: com.google.android.exoplayer2.ui.StyledPlayerControlView? = null,
     title: String,
     url: String,
+    isLive: Boolean = false
 ) {
     videoPlayer?.player = this
     musicPlayer?.player = this
     musicViewHolder?.player = this
 
+    val type = if (isLive) MimeTypes.APPLICATION_M3U8 else MimeTypes.APPLICATION_MP4
     val mediaItem: MediaItem = MediaItem.Builder()
         .setUri(url)
-//        .setMimeType(MimeTypes.APPLICATION_MP4) //For Videos and Mp3
-//        .setMimeType(MimeTypes.APPLICATION_M3U8) //For Stream Live Videos
+        .setMimeType(type)
         .setMediaMetadata(MediaMetadata.Builder().setTitle(title).build())
         .setLiveConfiguration(
             MediaItem.LiveConfiguration.Builder()
@@ -603,3 +607,116 @@ suspend fun <T> withCompute(
 suspend fun <T> withMain(
     block: suspend CoroutineScope.() -> T,
 ) = withContext(Dispatchers.Main.immediate) { block(this) }
+
+
+fun getScreenWidth() = Resources.getSystem().displayMetrics.widthPixels
+fun getScreenHeight() = Resources.getSystem().displayMetrics.heightPixels
+
+@SuppressLint("ClickableViewAccessibility")
+fun View.splitScreenForSoundAndBrightness(
+    context: Context,
+    activity: Activity,
+    percentage: ((Boolean, Boolean, String) -> Unit),
+) {
+    var lastY = 0f
+    var isDragging = false
+    var isLeftHalf = false
+    var currentVolume = 0
+    var brightness = 0
+    val stepVolume = 1
+    val minDistance = 50
+    val maxBrightness = 255
+    val stepBrightness = 5
+
+    setOnTouchListener { view, event ->
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                val audioManager =
+                    context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+                currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+//                brightness = Settings.System.getInt(
+//                    context.contentResolver,
+//                    Settings.System.SCREEN_BRIGHTNESS
+//                )
+                lastY = event.y
+                isDragging = true
+                isLeftHalf = event.x < getScreenWidth() / 2
+            }
+            MotionEvent.ACTION_MOVE -> {
+                if (isDragging) {
+                    val deltaY = event.y - lastY
+                    if (isLeftHalf) {
+                        // sound volume
+                        val audioManager =
+                            context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+                        val maxVolume =
+                            audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+                        if (deltaY < -minDistance) {
+                            currentVolume += stepVolume
+                            if (currentVolume > maxVolume) currentVolume = maxVolume
+                            audioManager.setStreamVolume(
+                                AudioManager.STREAM_MUSIC,
+                                currentVolume,
+                                0
+                            )
+                            lastY = event.y
+                        } else if (deltaY > minDistance) {
+                            currentVolume -= stepVolume
+                            if (currentVolume < 0) currentVolume = 0
+                            audioManager.setStreamVolume(
+                                AudioManager.STREAM_MUSIC,
+                                currentVolume,
+                                0
+                            )
+                            lastY = event.y
+                        }
+                        postDelayed({
+                            percentage.invoke(
+                                true,
+                                isDragging,
+                                (currentVolume * 100 / maxVolume).toString()
+                            )
+                        }, 200)
+                    } else {
+                        // screen brightness
+                        if (deltaY < -minDistance) {
+                            brightness += stepBrightness
+                            if (brightness > maxBrightness) brightness =
+                                maxBrightness
+                            val layoutParams = activity.window.attributes
+                            layoutParams.screenBrightness =
+                                brightness.toFloat() / maxBrightness
+                            activity.window.attributes = layoutParams
+                            lastY = event.y
+                        } else if (deltaY > minDistance) {
+                            brightness -= stepBrightness
+                            if (brightness < 0) brightness = 0
+                            val layoutParams = activity.window.attributes
+                            layoutParams.screenBrightness =
+                                brightness.toFloat() / maxBrightness
+                            activity.window.attributes = layoutParams
+                            lastY = event.y
+                        }
+                        postDelayed({
+                            percentage.invoke(
+                                false,
+                                isDragging,
+                                (brightness * 100 / maxBrightness).toString(),
+                            )
+                        }, 200)
+                    }
+                }
+            }
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                isDragging = false
+                percentage.invoke(
+                    true,
+                    isDragging,
+                    ""
+                )
+            }
+        }
+        view.onTouchEvent(event)
+        true
+    }
+}

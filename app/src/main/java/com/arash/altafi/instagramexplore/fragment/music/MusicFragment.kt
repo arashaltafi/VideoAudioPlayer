@@ -1,13 +1,18 @@
 package com.arash.altafi.instagramexplore.fragment.music
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.arash.altafi.instagramexplore.R
@@ -22,6 +27,7 @@ import com.google.android.exoplayer2.Renderer
 import com.google.android.exoplayer2.audio.*
 import com.google.android.exoplayer2.mediacodec.MediaCodecSelector
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import kotlinx.coroutines.*
 
 class MusicFragment : Fragment() {
 
@@ -30,6 +36,15 @@ class MusicFragment : Fragment() {
     private var toolbarView: CustomToolbar? = null
     private var player: ExoPlayer? = null
     private val fftAudioProcessor = FFTAudioProcessor()
+
+    private var timeJob: Job? = null
+    private var jobBackward: Job? = null
+    private var jobForward: Job? = null
+    private var timeLongPress = 1000L
+    private var timeFast = 0L
+    private val animationBlink by lazy {
+        AnimationUtils.loadAnimation(requireContext(), R.anim.blink)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,7 +57,31 @@ class MusicFragment : Fragment() {
             args.url,
             args.background,
         )
+        handleSound()
         return binding.root
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun handleSound() = binding.apply {
+        clSwipe.splitScreenForSoundAndBrightness(
+            requireContext(),
+            requireActivity()
+        ) { isVolume, isDragging, percentage ->
+            if (isVolume && isDragging) {
+                llBrightness.toGone()
+                tvVolume.text = percentage.plus("%")
+                llVolume.toShow()
+            } else if (isVolume.not() && isDragging) {
+                llVolume.toGone()
+                tvBrightness.text = percentage.plus("%")
+                llBrightness.toShow()
+            } else {
+                root.postDelayed({
+                    llVolume.toGone()
+                    llBrightness.toGone()
+                }, 1000)
+            }
+        }
     }
 
     private fun setupToolbar(title: String) {
@@ -53,8 +92,14 @@ class MusicFragment : Fragment() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility", "ResourceAsColor", "SetTextI18n")
     private fun initializeMusic(title: String, url: String, background: String = "") {
         binding.apply {
+            context?.sendBroadcast(
+                Intent(
+                    "PAUSE_PIP"
+                )
+            )
 
             val renderersFactory = object : DefaultRenderersFactory(requireContext()) {
                 override fun buildAudioRenderers(
@@ -93,13 +138,10 @@ class MusicFragment : Fragment() {
                 }
             }
 
-            val fullScreen: AppCompatImageView =
-                musicPlayer.findViewById(R.id.exo_fullscreen_button)
             val speedBtn: AppCompatImageView = musicPlayer.findViewById(com.google.android.exoplayer2.R.id.exo_playback_speed)
             val btnPause: AppCompatImageView = musicPlayer.findViewById(com.google.android.exoplayer2.R.id.exo_pause)
             val btnPlay: AppCompatImageView = musicPlayer.findViewById(com.google.android.exoplayer2.R.id.exo_play)
 
-            fullScreen.toGone()
             ivMusic.toShow()
             ivBackground.toShow()
             ivMusic.setImage(background)
@@ -123,12 +165,113 @@ class MusicFragment : Fragment() {
                 btnPlay.toShow()
             }
 
+            llFastBackwardClick.setOnTouchListener { _, event ->
+                val currentTime = player?.currentPosition ?: 0L
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    jobBackward = CoroutineScope(Dispatchers.Main).launch {
+                        delay(1000)
+                        tvFastBackward.toShow()
+                        ivFastBackward.toShow()
+                        ivFastBackward.startAnimation(animationBlink)
+                        llFastBackward.background = ContextCompat.getDrawable(
+                            requireContext(),
+                            R.drawable.background_fast_backward
+                        )
+                        timeJob = CoroutineScope(Dispatchers.Main).launch {
+                            repeat(Int.MAX_VALUE) {
+                                delay(500)
+                                timeFast += 500
+                                timeLongPress += timeFast
+                                player?.seekTo(currentTime - timeLongPress)
+                                tvFastBackward.text = if ((player?.currentPosition ?: 0L) <= 0L) {
+                                    ivFastBackward.clearAnimation()
+                                    requireContext().getString(R.string.second_fast)
+                                        .applyValue("0")
+                                } else {
+                                    ivFastBackward.startAnimation(animationBlink)
+                                    requireContext().getString(R.string.second_fast)
+                                        .applyValue(timeLongPress / 1000)
+                                }
+                            }
+                        }
+                    }
+                } else if (event.action == MotionEvent.ACTION_UP) {
+                    llFastBackward.setBackgroundColor(0)
+                    timeJob?.cancel()
+                    jobBackward?.cancel()
+                    timeLongPress = 1000L
+                    timeFast = 0L
+                    tvFastBackward.toHide()
+                    ivFastBackward.toHide()
+                    ivFastBackward.clearAnimation()
+                }
+                true
+            }
+
+            llFastForwardClick.setOnTouchListener { _, event ->
+                val currentTime = player?.currentPosition ?: 0L
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    jobForward = CoroutineScope(Dispatchers.Main).launch {
+                        delay(1000)
+                        tvFastForward.toShow()
+                        ivFastForward.toShow()
+                        ivFastForward.startAnimation(animationBlink)
+                        llFastForward.background = ContextCompat.getDrawable(
+                            requireContext(),
+                            R.drawable.background_fast_forward
+                        )
+                        timeJob = CoroutineScope(Dispatchers.Main).launch {
+                            repeat(Int.MAX_VALUE) {
+                                delay(500)
+                                timeFast += 500
+                                timeLongPress += timeFast
+                                player?.seekTo(currentTime + timeLongPress)
+                                tvFastForward.text =
+                                    if ((player?.currentPosition ?: 0L) >= ((player?.duration
+                                            ?: 0L) - 1L)
+                                    ) {
+                                        player?.seekTo(player?.duration ?: 0L)
+                                        ivFastForward.clearAnimation()
+                                        requireContext().getString(R.string.second_fast)
+                                            .applyValue("0")
+                                    } else {
+                                        ivFastForward.startAnimation(animationBlink)
+                                        requireContext().getString(R.string.second_fast)
+                                            .applyValue((timeLongPress / 1000))
+                                    }
+                            }
+                        }
+                    }
+                } else if (event.action == MotionEvent.ACTION_UP) {
+                    llFastForward.setBackgroundColor(0)
+                    timeJob?.cancel()
+                    jobForward?.cancel()
+                    timeLongPress = 1000L
+                    timeFast = 0L
+                    tvFastForward.toHide()
+                    ivFastForward.toHide()
+                    ivFastForward.clearAnimation()
+                }
+                true
+            }
+
+            /*btnMute.setOnClickListener {
+                if (player?.volume != 0f) {
+                    player?.volume = 0f
+                    btnMute.setImageResource(R.drawable.ic_sound_off_player)
+                } else {
+                    player?.volume = 1f
+                    btnMute.setImageResource(R.drawable.ic_sound_on_player)
+                }
+            }*/
+
             btnPause.setOnClickListener {
-                onPause()
+                player?.pause()
             }
 
             btnPlay.setOnClickListener {
-                onResume()
+                musicPlayer.player?.playWhenReady
+                player?.play()
             }
 
             speedBtn.setOnClickListener {
@@ -141,11 +284,11 @@ class MusicFragment : Fragment() {
                 override fun onIsPlayingChanged(isPlaying: Boolean) {
                     super.onIsPlayingChanged(isPlaying)
                     if (isPlaying) {
-                        "isPlaying = true".logE("MusicFragment")
+                        "isPlaying = true".logE(TAG)
                         btnPause.toShow()
                         btnPlay.toGone()
                     } else {
-                        "isPlaying = false".logE("MusicFragment")
+                        "isPlaying = false".logE(TAG)
                         btnPause.toGone()
                         btnPlay.toShow()
                     }
@@ -156,19 +299,19 @@ class MusicFragment : Fragment() {
                         Player.STATE_READY -> {
                             progressBar.toGone()
                             player?.playWhenReady = true
-                            "STATE_READY".logE("MusicFragment")
+                            "STATE_READY".logE(TAG)
                         }
                         Player.STATE_BUFFERING -> {
                             progressBar.toShow()
                             musicPlayer.keepScreenOn = true
-                            "STATE_BUFFERING".logE("MusicFragment")
+                            "STATE_BUFFERING".logE(TAG)
                         }
                         Player.STATE_IDLE -> {
                             findNavController().navigateUp()
-                            "STATE_IDLE".logE("MusicFragment")
+                            "STATE_IDLE".logE(TAG)
                         }
                         Player.STATE_ENDED -> {
-                            "STATE_ENDED".logE("MusicFragment")
+                            "STATE_ENDED".logE(TAG)
                         }
                         else -> {
                             progressBar.toGone()
@@ -184,7 +327,21 @@ class MusicFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        player?.pause()
+        timeJob?.cancel()
+        jobForward?.cancel()
+        jobBackward?.cancel()
+        binding.apply {
+            llFastBackward.setBackgroundColor(0)
+            llFastForward.setBackgroundColor(0)
+            timeLongPress = 1000L
+            timeFast = 0L
+            tvFastBackward.toHide()
+            ivFastBackward.toHide()
+            tvFastForward.toHide()
+            ivFastForward.toHide()
+            ivFastBackward.clearAnimation()
+            ivFastForward.clearAnimation()
+        }
     }
 
     override fun onStart() {
@@ -213,6 +370,10 @@ class MusicFragment : Fragment() {
         super.onDestroy()
         player?.release()
         player?.pause()
+    }
+
+    private companion object {
+        const val TAG = "MusicFragment"
     }
 
 }

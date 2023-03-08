@@ -43,12 +43,12 @@ android {
 
 dependencies {
     implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
     //ktx
-    implementation 'androidx.fragment:fragment-ktx:1.5.4'
+    implementation 'androidx.fragment:fragment-ktx:1.5.5'
 
     //lifecycle
     implementation 'androidx.lifecycle:lifecycle-common-java8:2.5.1'
@@ -64,8 +64,8 @@ dependencies {
 
     //test
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     //navigation
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
@@ -73,9 +73,9 @@ dependencies {
     implementation 'androidx.navigation:navigation-dynamic-features-fragment:2.5.3'
 
     //ExoPlayer
-    implementation 'com.google.android.exoplayer:exoplayer:2.18.1'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.1'
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.1'
+    implementation 'com.google.android.exoplayer:exoplayer:2.18.4'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.4'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.4'
 
     //Noise (Visualiser)
     implementation 'com.github.paramsen:noise:2.0.0'

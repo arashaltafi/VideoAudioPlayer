@@ -49,6 +49,16 @@ class HomeFragment : Fragment() {
                     )
                 )
             }
+
+            btnVideoLive.setOnClickListener {
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeFragmentToVideoFragment(
+                        title = "Test Video",
+                        url = "https://edge-uk2.manoto.click/live_500.m3u8",
+                        isLive = true
+                    )
+                )
+            }
         }
     }
 

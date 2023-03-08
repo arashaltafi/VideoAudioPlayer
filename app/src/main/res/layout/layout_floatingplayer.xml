@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.arash.altafi.instagramexplore.fragment.video.floatingWindow.view.XConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layoutDirection="rtl">
+
+    <com.google.android.exoplayer2.ui.StyledPlayerView
+        android:id="@+id/videoPlayer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/black"
+        app:controller_layout_id="@layout/picture_in_picture_player"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:resize_mode="fixed_width" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/btnStop"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="top"
+        android:layout_margin="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_close" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/btnOpenInFull"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="top"
+        android:layout_margin="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/btnMute"
+        app:layout_constraintRight_toLeftOf="@+id/btnMute"
+        app:layout_constraintTop_toTopOf="@+id/btnMute"
+        app:srcCompat="@drawable/ic_open_in_full_24"
+        tools:ignore="MissingConstraints" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/btnMute"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="top"
+        android:layout_margin="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/btnStop"
+        app:layout_constraintRight_toLeftOf="@+id/btnStop"
+        app:layout_constraintTop_toTopOf="@+id/btnStop"
+        app:srcCompat="@drawable/ic_sound_on_player"
+        tools:ignore="MissingConstraints" />
+
+</com.arash.altafi.instagramexplore.fragment.video.floatingWindow.view.XConstraintLayout>

@@ -23,6 +23,13 @@
         android:text="video" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnVideoLive"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="video Live" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnMusic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
