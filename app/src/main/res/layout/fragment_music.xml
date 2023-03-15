@@ -35,34 +35,6 @@
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/llFastForward"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/ivFastForward"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:visibility="invisible"
-                    app:srcCompat="@drawable/ic_baseline_fast_forward_24"
-                    app:tint="@color/white"
-                    tools:visibility="visible" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tvFastForward"
-                    style="@style/txt.h2.bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:visibility="invisible"
-                    tools:text="+ 1000" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/llFastBackward"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -90,6 +62,34 @@
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/llFastForward"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/ivFastForward"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:visibility="invisible"
+                    app:srcCompat="@drawable/ic_baseline_fast_forward_24"
+                    app:tint="@color/white"
+                    tools:visibility="visible" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tvFastForward"
+                    style="@style/txt.h2.bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:visibility="invisible"
+                    tools:text="+ 1000" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -110,13 +110,13 @@
                 android:orientation="horizontal">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/llFastForwardClick"
+                    android:id="@+id/llFastBackwardClick"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.5" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/llFastBackwardClick"
+                    android:id="@+id/llFastForwardClick"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.5" />
