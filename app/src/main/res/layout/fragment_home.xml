@@ -19,21 +19,28 @@
         android:id="@+id/btnVideo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:text="video" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnVideoLive"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:text="video Live" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnMusic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:text="music" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnPlaySound"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="play Sound" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

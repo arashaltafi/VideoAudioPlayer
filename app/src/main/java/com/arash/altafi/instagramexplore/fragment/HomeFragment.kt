@@ -1,16 +1,20 @@
 package com.arash.altafi.instagramexplore.fragment
 
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.arash.altafi.instagramexplore.R
 import com.arash.altafi.instagramexplore.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
+    private var playerSound: MediaPlayer? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,6 +63,29 @@ class HomeFragment : Fragment() {
                     )
                 )
             }
+
+            btnPlaySound.setOnClickListener {
+                playSuccessSound()
+            }
+        }
+    }
+
+    private fun playSuccessSound() {
+        if (playerSound == null) {
+            playerSound = MediaPlayer.create(requireContext(), R.raw.alarm).apply {
+                try {
+                    prepare()
+                    setOnCompletionListener {
+                        seekTo(0)
+                    }
+                } catch (e: Exception) {
+                    Log.e("HomeFragment", "error mediaPlayerSuccess: ${e.message}")
+                }
+            }.also {
+                it.start()
+            }
+        } else {
+            playerSound?.start()
         }
     }
 
