@@ -9,13 +9,13 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.*
-import androidx.fragment.app.Fragment
 import android.view.animation.AnimationUtils
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.arash.altafi.instagramexplore.R
@@ -63,7 +63,7 @@ class VideoFragment : Fragment() {
             Log.e(TAG, "permission_floating_window_message")
         }
     }
-    
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -139,10 +139,12 @@ class VideoFragment : Fragment() {
                 llBrightness.toGone()
                 tvVolume.text = percentage.plus("%")
                 llVolume.toShow()
+                bvVolume.value = percentage.toInt()
             } else if (isVolume.not() && isDragging) {
                 llVolume.toGone()
                 tvBrightness.text = percentage.plus("%")
                 llBrightness.toShow()
+                bvBrightness.value = percentage.toInt()
             } else {
                 videoPlayer.performClick()
                 root.postDelayed({
@@ -168,16 +170,21 @@ class VideoFragment : Fragment() {
         binding.apply {
 
             fullScreen = videoPlayer.findViewById(R.id.exo_fullscreen_button)
-            val btnSpeed: AppCompatImageView = videoPlayer.findViewById(com.google.android.exoplayer2.R.id.exo_playback_speed)
-            val btnPause: AppCompatImageView = videoPlayer.findViewById(com.google.android.exoplayer2.R.id.exo_pause)
-            val btnPlay: AppCompatImageView = videoPlayer.findViewById(com.google.android.exoplayer2.R.id.exo_play)
+            val btnSpeed: AppCompatImageView =
+                videoPlayer.findViewById(com.google.android.exoplayer2.R.id.exo_playback_speed)
+            val btnPause: AppCompatImageView =
+                videoPlayer.findViewById(com.google.android.exoplayer2.R.id.exo_pause)
+            val btnPlay: AppCompatImageView =
+                videoPlayer.findViewById(com.google.android.exoplayer2.R.id.exo_play)
             val btnPip: AppCompatImageView =
                 videoPlayer.findViewById(R.id.exo_picture_in_picture_button)
             val btnMute: AppCompatImageView = videoPlayer.findViewById(R.id.ivMute)
             val ivForward: AppCompatImageView = videoPlayer.findViewById(R.id.ivForward)
             val ivRewind: AppCompatImageView = videoPlayer.findViewById(R.id.ivRewind)
-            val tvPosition: MaterialTextView = videoPlayer.findViewById(com.google.android.exoplayer2.R.id.exo_position)
-            val tvDuration: MaterialTextView = videoPlayer.findViewById(com.google.android.exoplayer2.R.id.exo_duration)
+            val tvPosition: MaterialTextView =
+                videoPlayer.findViewById(com.google.android.exoplayer2.R.id.exo_position)
+            val tvDuration: MaterialTextView =
+                videoPlayer.findViewById(com.google.android.exoplayer2.R.id.exo_duration)
 
             val trackSelector = DefaultTrackSelector(requireContext())
             player = ExoPlayer.Builder(requireContext())

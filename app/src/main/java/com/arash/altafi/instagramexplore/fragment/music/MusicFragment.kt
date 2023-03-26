@@ -71,10 +71,12 @@ class MusicFragment : Fragment() {
                 llBrightness.toGone()
                 tvVolume.text = percentage.plus("%")
                 llVolume.toShow()
+                bvVolume.value = percentage.toInt()
             } else if (isVolume.not() && isDragging) {
                 llVolume.toGone()
                 tvBrightness.text = percentage.plus("%")
                 llBrightness.toShow()
+                bvBrightness.value = percentage.toInt()
             } else {
                 root.postDelayed({
                     llVolume.toGone()
@@ -138,9 +140,12 @@ class MusicFragment : Fragment() {
                 }
             }
 
-            val speedBtn: AppCompatImageView = musicPlayer.findViewById(com.google.android.exoplayer2.R.id.exo_playback_speed)
-            val btnPause: AppCompatImageView = musicPlayer.findViewById(com.google.android.exoplayer2.R.id.exo_pause)
-            val btnPlay: AppCompatImageView = musicPlayer.findViewById(com.google.android.exoplayer2.R.id.exo_play)
+            val speedBtn: AppCompatImageView =
+                musicPlayer.findViewById(com.google.android.exoplayer2.R.id.exo_playback_speed)
+            val btnPause: AppCompatImageView =
+                musicPlayer.findViewById(com.google.android.exoplayer2.R.id.exo_pause)
+            val btnPlay: AppCompatImageView =
+                musicPlayer.findViewById(com.google.android.exoplayer2.R.id.exo_play)
 
             ivMusic.toShow()
             ivBackground.toShow()
