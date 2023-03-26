@@ -35,9 +35,9 @@ import androidx.core.content.FileProvider
 import androidx.core.view.GestureDetectorCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arash.altafi.instagramexplore.MainActivity
 import com.arash.altafi.instagramexplore.R
 import com.arash.altafi.instagramexplore.utils.Utils.speedMedia
-import com.bumptech.glide.request.RequestOptions
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.util.MimeTypes
 import com.squareup.picasso.Callback
@@ -627,6 +627,26 @@ fun View.splitScreenForSoundAndBrightness(
     val minDistance = 50
     val maxBrightness = 255
     val stepBrightness = 5
+    var keyJob: Job? = null
+
+    activity.cast<MainActivity>()?.volumeListener = {
+        keyJob?.cancel()
+        keyJob = null
+        percentage.invoke(
+            true,
+            true,
+            if (it > 100) "100" else if (it < 0) "0" else it.toString()
+        )
+
+        keyJob = CoroutineScope(Dispatchers.Main).launch {
+            delay(1000)
+            percentage.invoke(
+                true,
+                false,
+                ""
+            )
+        }
+    }
 
     setOnTouchListener { view, event ->
         when (event.action) {
