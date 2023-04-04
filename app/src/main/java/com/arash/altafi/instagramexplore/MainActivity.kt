@@ -5,6 +5,7 @@ import android.media.AudioManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
+import androidx.navigation.fragment.findNavController
 import com.arash.altafi.instagramexplore.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -36,11 +37,7 @@ class MainActivity : AppCompatActivity() {
             currentVolume += 1
             if (currentVolume > maxVolume) currentVolume = maxVolume
 
-            audioManager.setStreamVolume(
-                AudioManager.STREAM_MUSIC,
-                currentVolume,
-                0
-            )
+            handleAudioManager()
 
             return true
         } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
@@ -56,14 +53,31 @@ class MainActivity : AppCompatActivity() {
             currentVolume -= 1
             if (currentVolume < 0) currentVolume = 0
 
-            audioManager.setStreamVolume(
-                AudioManager.STREAM_MUSIC,
-                currentVolume,
-                0
-            )
+            handleAudioManager()
 
             return true
         }
         return super.onKeyDown(keyCode, event)
     }
+
+    private fun handleAudioManager() {
+        if (supportFragmentManager.fragments.lastOrNull()
+                ?.findNavController()?.currentDestination?.id == R.id.videoFragment ||
+            supportFragmentManager.fragments.lastOrNull()
+                ?.findNavController()?.currentDestination?.id == R.id.musicFragment
+        ) {
+            audioManager.setStreamVolume(
+                AudioManager.STREAM_MUSIC,
+                currentVolume,
+                0
+            )
+        } else {
+            audioManager.setStreamVolume(
+                AudioManager.STREAM_MUSIC,
+                currentVolume,
+                1
+            )
+        }
+    }
+
 }
