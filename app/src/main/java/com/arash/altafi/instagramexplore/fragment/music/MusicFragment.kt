@@ -37,6 +37,7 @@ class MusicFragment : Fragment() {
     private var player: ExoPlayer? = null
     private val fftAudioProcessor = FFTAudioProcessor()
 
+    private var retryJob: Job? = null
     private var timeJob: Job? = null
     private var jobBackward: Job? = null
     private var jobForward: Job? = null
@@ -57,6 +58,7 @@ class MusicFragment : Fragment() {
             args.url,
             args.background,
         )
+        handleRetry()
         handleSound()
         return binding.root
     }
@@ -312,8 +314,10 @@ class MusicFragment : Fragment() {
                             "STATE_BUFFERING".logE(TAG)
                         }
                         Player.STATE_IDLE -> {
-                            findNavController().navigateUp()
                             "STATE_IDLE".logE(TAG)
+                            popError("Connection Error")
+                            retryJob?.start()
+//                            findNavController().navigateUp()
                         }
                         Player.STATE_ENDED -> {
                             "STATE_ENDED".logE(TAG)
@@ -328,6 +332,15 @@ class MusicFragment : Fragment() {
 
         }
 
+    }
+
+    private fun handleRetry() {
+        retryJob = CoroutineScope(Dispatchers.Main).launch {
+            repeat(Int.MAX_VALUE) {
+                player?.prepare()
+                delay(10000)
+            }
+        }
     }
 
     override fun onPause() {

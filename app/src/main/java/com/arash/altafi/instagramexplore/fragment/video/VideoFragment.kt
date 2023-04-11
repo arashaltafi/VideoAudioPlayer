@@ -39,6 +39,7 @@ class VideoFragment : Fragment() {
     private var isFullScreen = false
     private val args by navArgs<VideoFragmentArgs>()
 
+    private var retryJob: Job? = null
     private var timeJob: Job? = null
     private var jobBackward: Job? = null
     private var jobForward: Job? = null
@@ -75,7 +76,7 @@ class VideoFragment : Fragment() {
             args.url,
             args.isLive
         )
-
+        handleRetry()
         handleBackPress()
         handleSound()
 
@@ -429,8 +430,10 @@ class VideoFragment : Fragment() {
                             "STATE_BUFFERING".logE(TAG)
                         }
                         Player.STATE_IDLE -> {
-                            findNavController().navigateUp()
                             "STATE_IDLE".logE(TAG)
+                            popError("Connection Error")
+                            retryJob?.start()
+//                            findNavController().navigateUp()
                         }
                         Player.STATE_ENDED -> {
                             "STATE_ENDED".logE(TAG)
@@ -442,6 +445,15 @@ class VideoFragment : Fragment() {
                     }
                 }
             })
+        }
+    }
+
+    private fun handleRetry() {
+        retryJob = CoroutineScope(Dispatchers.Main).launch {
+            repeat(Int.MAX_VALUE) {
+                player?.prepare()
+                delay(10000)
+            }
         }
     }
 
