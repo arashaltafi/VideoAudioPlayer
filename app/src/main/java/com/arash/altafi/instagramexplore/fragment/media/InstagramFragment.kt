@@ -12,8 +12,10 @@ import com.arash.altafi.instagramexplore.R
 import com.arash.altafi.instagramexplore.databinding.FragmentInstagramBinding
 import com.arash.altafi.instagramexplore.fragment.media.adapter.VideoAdapter
 import com.arash.altafi.instagramexplore.widget.CustomToolbar
-import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper
+import com.arash.altafi.instagramexplore.widget.gravitySnapHelper.GravitySnapHelper
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class InstagramFragment : Fragment() {
 
     private lateinit var binding: FragmentInstagramBinding
@@ -62,17 +64,6 @@ class InstagramFragment : Fragment() {
                 "946",
                 "15",
                 getString(R.string.minute_35),
-            )
-        )
-        mediaResponse.add(
-            MediaResponse(
-                getString(R.string.live_title),
-                getString(R.string.lorem),
-                "https://edge-cdn1.manoto.click/live_500.m3u8",
-                TypeMedia.LIVE,
-                "105",
-                "15",
-                getString(R.string.minute_59),
             )
         )
         mediaResponse.add(

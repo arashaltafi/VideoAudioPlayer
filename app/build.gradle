@@ -26,11 +26,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
     kapt {
         correctErrorTypes true
@@ -42,46 +42,43 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    //ktx
-    implementation 'androidx.fragment:fragment-ktx:1.5.5'
+    //KTX
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.fragment:fragment-ktx:1.5.7'
 
-    //lifecycle
-    implementation 'androidx.lifecycle:lifecycle-common-java8:2.5.1'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
+    //LifeCycle
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.5.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
 
-    //coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+    //Coroutine
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
 
-    //multidex
-    implementation 'androidx.multidex:multidex:2.0.1'
+    //MultiDex
+    implementation "androidx.multidex:multidex:2.0.1"
 
-    //test
+    //Test
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-    //navigation
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
-    implementation 'androidx.navigation:navigation-dynamic-features-fragment:2.5.3'
+    //NavigationComponent
+    implementation "androidx.navigation:navigation-fragment-ktx:2.5.3"
+    implementation "androidx.navigation:navigation-ui-ktx:2.5.3"
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:2.5.3"
 
     //ExoPlayer
-    implementation 'com.google.android.exoplayer:exoplayer:2.18.5'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.5'
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.5'
+    implementation 'com.google.android.exoplayer:exoplayer:2.18.6'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.6'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.6'
 
     //Noise (Visualiser)
     implementation 'com.github.paramsen:noise:2.0.0'
-
-    //gravitySnapHelper
-    implementation 'com.github.rubensousa:gravitysnaphelper:2.2.2'
 
     //Picasso BlurImage
     implementation 'jp.wasabeef:picasso-transformations:2.4.0'
@@ -91,10 +88,11 @@ dependencies {
     //SwipeRefreshLayout
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
-    //glide
-    implementation 'com.github.bumptech.glide:glide:4.15.0'
-    kapt 'com.github.bumptech.glide:compiler:4.15.0'
+    //Glide
+    implementation "com.github.bumptech.glide:glide:4.15.1"
+    implementation "jp.wasabeef:glide-transformations:4.3.0"
+    kapt "com.github.bumptech.glide:compiler:4.15.0"
 
-    //alerter
+    //Alerter
     implementation "com.github.tapadoo:alerter:7.2.4"
 }
