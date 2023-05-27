@@ -489,6 +489,11 @@ class VideoFragment : Fragment() {
         player?.release()
         player?.pause()
         if (isFullScreen) fullScreen.performClick()
+
+        //Clear Flag Screen On
+        requireActivity().window.clearFlags(
+            WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+        )
     }
 
     companion object {

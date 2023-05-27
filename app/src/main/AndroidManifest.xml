@@ -22,10 +22,10 @@
         android:theme="@style/Theme.InstagramExplore"
         tools:targetApi="31">
         <activity
-            android:screenOrientation="portrait"
-            android:configChanges="orientation|screenLayout|screenSize|smallestScreenSize"
             android:name=".MainActivity"
-            android:exported="true">
+            android:configChanges="orientation|screenLayout|screenSize|smallestScreenSize"
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,10 +33,10 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".fragment.video.floatingWindow.VideoFloatingService"
-            android:exported="true">
+        <service
+            android:name=".fragment.video.floatingWindow.VideoFloatingService"
+            android:exported="true" />
 
-        </service>
     </application>
 
 </manifest>
